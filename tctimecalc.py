@@ -228,7 +228,7 @@ class TcTimeData(tuple):
         
         tuple.__init__(self, data)
         
-        tlist = [temp for seg,temp in self]
+        tlist = [x[1] for x in self]
         self._tempMin = min(tlist)
         self._tempMax = max(tlist)
         self._growing = self[-1][1] > self[0][1]

@@ -135,7 +135,7 @@ class TCMethods(unittest.TestCase):
         Iini = 0.7*self.scc.getCurrent(50)
         Ifin = 2*Iini
         Tcini = self.scc.getTc(Iini)
-        Tcfin = self.scc.getTc(Ifin)
+        #Tcfin = self.scc.getTc(Ifin)
         lapse = 5*60
         
         curva1 = self.scc.getData(Tcini, Ifin, lapse, timex=0)
@@ -167,7 +167,7 @@ class TCMethods(unittest.TestCase):
         Iini = self.scc.getCurrent(50)
         Ifin = 0.5*Iini
         Tcini = self.scc.getTc(Iini)
-        Tcfin = self.scc.getTc(Ifin)
+        #Tcfin = self.scc.getTc(Ifin)
         lapse = 5*60
         
         curva1 = self.scc.getData(Tcini, Ifin, lapse, timex=0)
