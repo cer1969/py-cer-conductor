@@ -3,8 +3,9 @@
 
 from __future__ import division
 
-from cer.utils.valuetest import *
-from constants import *
+from cer.utils.value import check
+from cer.utils.value import deco
+from constants import (CF_ENDESA, CF_IEEE, TC_MIN, TC_MAX)
 
 #-----------------------------------------------------------------------------------------
 
@@ -35,9 +36,9 @@ class OperatingItem(object):
         """
         currentcalc.altitude = altitude
         currentcalc.emissivity = emissivity
-        test_ge(tempMaxOp, TC_MIN)
-        test_le(tempMaxOp, TC_MAX)
-        test_ge(nsc, 1)
+        check.ge(tempMaxOp, TC_MIN)
+        check.le(tempMaxOp, TC_MAX)
+        check.ge(nsc, 1)
         
         self._currentcalc = currentcalc
         self._tempMaxOp = tempMaxOp
@@ -126,7 +127,7 @@ class OperatingTable(list):
     def _getAirVelocity(self):
         return self[0].currentcalc.airVelocity
 
-    @deco_ge(0)
+    @deco.ge(0)
     def _setAirVelocity(self, value):
         for i in self:
             i.currentcalc.airVelocity = value 
@@ -134,8 +135,8 @@ class OperatingTable(list):
     def _getSunEffect(self):
         return self[0].currentcalc.sunEffect
     
-    @deco_ge(0)
-    @deco_le(1)
+    @deco.ge(0)
+    @deco.le(1)
     def _setSunEffect(self, value):
         for i in self:
             i.currentcalc.sunEffect = value
@@ -143,8 +144,8 @@ class OperatingTable(list):
     def _getEmissivity(self):
         return self[0].currentcalc.emissivity
 
-    @deco_ge(0)
-    @deco_le(1)
+    @deco.ge(0)
+    @deco.le(1)
     def _setEmissivity(self, value):
         for i in self:
             i.currentcalc.emissivity = value
@@ -152,7 +153,7 @@ class OperatingTable(list):
     def _getFormula(self):
         return self[0].currentcalc.formula
     
-    @deco_in([CF_ENDESA, CF_IEEE])
+    @deco.isIn([CF_ENDESA, CF_IEEE])
     def _setFormula(self, value):
         for i in self:
             i.currentcalc.formula = value
@@ -164,5 +165,3 @@ class OperatingTable(list):
     sunEffect   = property(_getSunEffect,   _setSunEffect)
     emissivity  = property(_getEmissivity,  _setEmissivity)
     formula     = property(_getFormula,     _setFormula)
-
-    

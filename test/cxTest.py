@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # CRISTIAN ECHEVERRÍA RABÍ 
 
-from cer.conductor import cx
+import cer.conductor as cx
 
 for i,o in cx.Conductor.__dict__.items():
     print i, type(o)
