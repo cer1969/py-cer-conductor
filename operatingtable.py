@@ -91,12 +91,14 @@ class OperatingTable(list):
 
     __slots__ = ('idx',)
 
-    def __init__(self, items=[], idx=None):
+    def __init__(self, items=None, idx=None):
         """
         items : Secuence with OperatingItem instance
         idx   : Database key
         """
-        list.__init__(self, items)
+        its = [] if items is None else items
+        
+        list.__init__(self, its)
         self.idx = idx
     
     #-------------------------------------------------------------------------------------
