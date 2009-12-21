@@ -4,8 +4,9 @@
 from __future__ import division
 import math
 
-from cer.utils.valuetest import *
-from constants import * 
+from cer.utils.value import check
+from cer.utils.value import deco
+from constants import (ITER_MAX, TENSION_MAX)
 
 #-----------------------------------------------------------------------------------------
 
@@ -68,13 +69,13 @@ class TensionCalc(object):
         Valid values are required for diameter, area, weight, strength and
         category (modelas, coefexp, creep)
         """
-        test_gt(conductor.diameter, 0)
-        test_gt(conductor.area, 0)
-        test_gt(conductor.weight, 0)
-        test_gt(conductor.strength, 0)
-        test_gt(conductor.category.modelas, 0)
-        test_gt(conductor.category.coefexp, 0)
-        test_ge(conductor.category.creep, 0)
+        check.gt(conductor.diameter, 0)
+        check.gt(conductor.area, 0)
+        check.gt(conductor.weight, 0)
+        check.gt(conductor.strength, 0)
+        check.gt(conductor.category.modelas, 0)
+        check.gt(conductor.category.coefexp, 0)
+        check.ge(conductor.category.creep, 0)
         
         self._conductor = conductor
         
@@ -98,7 +99,7 @@ class TensionCalc(object):
         tc : Conductor temperature [°C]
              Without current is equal to ambiente temperature. 
         """
-        test_gt(rs, 0)
+        check.gt(rs, 0)
         
         P1 = self.transLoadRef
         P2 = self.transLoadCal
@@ -215,15 +216,15 @@ class TensionCalc(object):
     def _getTensionFactorRef(self):
         return self._tensionFactorRef
     
-    @deco_ge(0)
-    @deco_le(1)
+    @deco.ge(0)
+    @deco.le(1)
     def _setTensionFactorRef(self, value):
         self._tensionFactorRef = value
     
     def _getTensionRef(self):
         return self._tensionFactorRef*self._conductor.strength
     
-    @deco_ge(0)
+    @deco.ge(0)
     def _setTensionRef(self, value):
         self._tensionFactorRef = value/self._conductor.strength
     
@@ -236,51 +237,51 @@ class TensionCalc(object):
     def _getCreepFactorRef(self):
         return self._creepFactorRef
     
-    @deco_ge(0)
-    @deco_le(1)
+    @deco.ge(0)
+    @deco.le(1)
     def _setCreepFactorRef(self, value):
         self._creepFactorRef = value
     
     def _getIceThickRef(self):
         return self._iceThickRef
     
-    @deco_ge(0)
+    @deco.ge(0)
     def _setIceThickRef(self, value):
         self._iceThickRef = value
     
     def _getWindPressureRef(self):
         return self._windPressureRef
     
-    @deco_ge(0)
+    @deco.ge(0)
     def _setWindPressureRef(self, value):
         self._windPressureRef = value
     
     def _getCreepFactorCal(self):
         return self._creepFactorCal
     
-    @deco_ge(0)
-    @deco_le(1)
+    @deco.ge(0)
+    @deco.le(1)
     def _setCreepFactorCal(self, value):
         self._creepFactorCal = value
     
     def _getIceThickCal(self):
         return self._iceThickCal
     
-    @deco_ge(0)
+    @deco.ge(0)
     def _setIceThickCal(self, value):
         self._iceThickCal = value
     
     def _getWindPressureCal(self):
         return self._windPressureCal
     
-    @deco_ge(0)
+    @deco.ge(0)
     def _setWindPressureCal(self, value):
         self._windPressureCal = value
     
     def _getDeltaTension(self):
         return self._deltaTension
     
-    @deco_gt(0)
+    @deco.gt(0)
     def _setDeltaTension(self, value):
         self._deltaTension = value
     

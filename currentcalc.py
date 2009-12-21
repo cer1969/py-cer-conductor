@@ -3,8 +3,9 @@
 
 from __future__ import division
 
-from cer.utils.valuetest import *
-from constants import *
+from cer.utils.value import check
+from cer.utils.value import deco
+from constants import (CF_ENDESA, CF_IEEE, TA_MIN, TA_MAX, TC_MIN, TC_MAX, ITER_MAX)
 
 #-----------------------------------------------------------------------------------------
 
@@ -36,10 +37,10 @@ class CurrentCalc(object):
         conductor : Conductor instance. 
         Valid values are required for r25, diameter and category.alpha
         """
-        test_gt(conductor.r25, 0)
-        test_gt(conductor.diameter, 0)
-        test_gt(conductor.category.alpha, 0)
-        test_lt(conductor.category.alpha, 1)
+        check.gt(conductor.r25, 0)
+        check.gt(conductor.diameter, 0)
+        check.gt(conductor.category.alpha, 0)
+        check.lt(conductor.category.alpha, 1)
         
         self._conductor = conductor
         
@@ -57,8 +58,8 @@ class CurrentCalc(object):
         """Returns resistance [Ohm/km]
         tc : Conductor temperature [°C]
         """
-        test_ge(tc, TC_MIN)
-        test_le(tc, TC_MAX)
+        check.ge(tc, TC_MIN)
+        check.le(tc, TC_MAX)
         return self._conductor.r25*(1 + self._conductor.category.alpha*(tc - 25))
 
     def getCurrent(self, ta, tc):
@@ -66,10 +67,10 @@ class CurrentCalc(object):
         ta : Ambient temperature [°C]
         tc : Conductor temperature [°C]
         """
-        test_ge(ta, TA_MIN)
-        test_le(ta, TA_MAX)
-        test_ge(tc, TC_MIN)
-        test_le(tc, TC_MAX)
+        check.ge(ta, TA_MIN)
+        check.le(ta, TA_MAX)
+        check.ge(tc, TC_MIN)
+        check.le(tc, TC_MAX)
         
         if ta >= tc:
             return 0.0
@@ -111,8 +112,8 @@ class CurrentCalc(object):
         ta : Ambient temperature [°C]
         ic : Current [ampere]
         """
-        test_ge(ic, 0)
-        test_le(ic, self.getCurrent(ta, TC_MAX))   # Ensure Tc <= TC_MAX
+        check.ge(ic, 0)
+        check.le(ic, self.getCurrent(ta, TC_MAX))   # Ensure Tc <= TC_MAX
         
         Tmin = ta
         Tmax = TA_MAX
@@ -135,8 +136,8 @@ class CurrentCalc(object):
         tc : Conductor temperature [°C]
         ic : Current [ampere]
         """
-        test_ge(ic, 0)
-        test_le(ic, self.getCurrent(TA_MIN, tc))   # Ensure Ta >= TA_MIN
+        check.ge(ic, 0)
+        check.le(ic, self.getCurrent(TA_MIN, tc))   # Ensure Ta >= TA_MIN
         
         Tmin = TC_MIN
         Tmax = tc
@@ -163,44 +164,44 @@ class CurrentCalc(object):
     def _getAltitude(self):
         return self._altitude
     
-    @deco_ge(0)
+    @deco.ge(0)
     def _setAltitude(self, value):
         self._altitude = value
 
     def _getAirVelocity(self):
         return self._airVelocity
     
-    @deco_ge(0)
+    @deco.ge(0)
     def _setAirVelocity(self, value):
         self._airVelocity = value
     
     def _getSunEffect(self):
         return self._sunEffect
     
-    @deco_ge(0)
-    @deco_le(1)
+    @deco.ge(0)
+    @deco.le(1)
     def _setSunEffect(self, value):
         self._sunEffect = value
     
     def _getEmissivity(self):
         return self._emissivity
     
-    @deco_ge(0)
-    @deco_le(1)
+    @deco.ge(0)
+    @deco.le(1)
     def _setEmissivity(self, value):
         self._emissivity = value
     
     def _getFormula(self):
         return self._formula
     
-    @deco_in([CF_ENDESA, CF_IEEE])
+    @deco.isIn([CF_ENDESA, CF_IEEE])
     def _setFormula(self, value):
         self._formula = value
     
     def _getDeltaTemp(self):
         return self._deltaTemp
     
-    @deco_gt(0)
+    @deco.gt(0)
     def _setDeltaTemp(self, value):
         self._deltaTemp = value
     

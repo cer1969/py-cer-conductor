@@ -2,7 +2,7 @@
 # CRISTIAN ECHEVERRÍA RABÍ 
 
 from __future__ import division
-from cer.conductor import cx
+import cer.conductor as cx
 import time
 
 #-----------------------------------------------------------------------------------------

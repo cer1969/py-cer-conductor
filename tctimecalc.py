@@ -4,8 +4,9 @@
 from __future__ import division
 import math
 
-from cer.utils.valuetest import *
-from constants import *
+from cer.utils.value import check
+from cer.utils.value import deco
+from constants import (TA_MIN, TA_MAX, TC_MAX, ITER_MAX)
 
 #-----------------------------------------------------------------------------------------
 
@@ -35,7 +36,7 @@ class TcTimeCalc(object):
         ta          : Ambient temperature [°C]
         Valid values are required for currentcalc.conductor.hcap and Ta
         """
-        test_gt(currentcalc.conductor.hcap, 0)
+        check.gt(currentcalc.conductor.hcap, 0)
         
         self._currentcalc = currentcalc
         self._setTa(ta)
@@ -67,9 +68,9 @@ class TcTimeCalc(object):
         Is not necessary to start the sequence with the balance temperature prior
         to the change in current.
         """
-        test_ge(icfin, 0)
-        test_le(icfin, self._icmax)
-        test_gt(lapse, 0)
+        check.ge(icfin, 0)
+        check.le(icfin, self._icmax)
+        check.gt(lapse, 0)
         
         npasos = int(math.ceil(lapse/self._timeStep)) + 1
         times = [(timex + x*self._timeStep) for x in range(npasos)]
@@ -91,10 +92,10 @@ class TcTimeCalc(object):
         factor  : Ifin/Iini
         lapse   : Time interval to rich tcx [seconds]
         """
-        test_gt(tcx, self._ta)
-        test_le(tcx, TC_MAX)
-        test_gt(factor, 0)
-        test_ge(lapse, 0)
+        check.gt(tcx, self._ta)
+        check.le(tcx, TC_MAX)
+        check.gt(factor, 0)
+        check.ge(lapse, 0)
         
         ibmin = 0
         ibmax = self._icmax/factor
@@ -123,11 +124,11 @@ class TcTimeCalc(object):
         lapse  : Time interval to rich Tcx [seconds]
         tcxini : Optional. If None it will be calculated using Iini.
         """
-        test_gt(tcx, self._ta)
-        test_le(tcx, TC_MAX)
-        test_gt(icini, 0)
-        test_le(icini, self._icmax)
-        test_ge(lapse, 0)
+        check.gt(tcx, self._ta)
+        check.le(tcx, TC_MAX)
+        check.gt(icini, 0)
+        check.le(icini, self._icmax)
+        check.ge(lapse, 0)
         
         Tini = self.getTc(icini)
         if tcxini is None:
@@ -135,13 +136,13 @@ class TcTimeCalc(object):
         
         # Test if it growing or not
         if tcx > Tini:
-            test_ge(tcxini, Tini)
-            test_lt(tcxini,  tcx)
+            check.ge(tcxini, Tini)
+            check.lt(tcxini,  tcx)
             ibmin = icini
             ibmax = self._icmax
         else:
-            test_le(tcxini, Tini)
-            test_gt(tcxini,  tcx)
+            check.le(tcxini, Tini)
+            check.gt(tcxini,  tcx)
             ibmin = 0.0
             ibmax = icini
         
@@ -174,8 +175,8 @@ class TcTimeCalc(object):
     def _getTa(self):
         return self._ta
     
-    @deco_ge(TA_MIN)
-    @deco_le(TA_MAX)
+    @deco.ge(TA_MIN)
+    @deco.le(TA_MAX)
     def _setTa(self, value):
         self._ta = value
         self._icmax = self.getCurrent(TC_MAX)
@@ -183,15 +184,15 @@ class TcTimeCalc(object):
     def _getTimeStep(self):
         return self._timeStep
     
-    @deco_gt(0)
-    @deco_le(60)
+    @deco.gt(0)
+    @deco.le(60)
     def _setTimeStep(self, value):
         self._timeStep = value
     
     def _getDeltaIc(self):
         return self._deltaIc
     
-    @deco_gt(0)
+    @deco.gt(0)
     def _setDeltaIc(self, value):
         self._deltaIc = value
     
@@ -224,7 +225,7 @@ class TcTimeData(tuple):
         data : Secuence with tuples (time, Tc)
         len(data) must be greater than 1
         """
-        test_gt(len(data), 1)
+        check.gt(len(data), 1)
         
         tuple.__init__(self, data)
         
