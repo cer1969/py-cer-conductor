@@ -220,20 +220,22 @@ class TcTimeData(tuple):
     
     """
     
-    def __init__(self, data):
+    def __new__(cls, data):
         """
         data : Secuence with tuples (time, Tc)
         len(data) must be greater than 1
         """
         check.gt(len(data), 1)
         
-        tuple.__init__(self, data)
+        t = tuple.__new__(cls, data)
+                
+        tlist = [x[1] for x in t]
+        t._tempMin = min(tlist)
+        t._tempMax = max(tlist)
+        t._growing = t[-1][1] > t[0][1]
         
-        tlist = [x[1] for x in self]
-        self._tempMin = min(tlist)
-        self._tempMax = max(tlist)
-        self._growing = self[-1][1] > self[0][1]
-        
+        return t
+    
     #-------------------------------------------------------------------------------------
     # Public methods
     
