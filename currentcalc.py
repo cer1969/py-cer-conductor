@@ -3,8 +3,7 @@
 
 from __future__ import division
 
-from cer.utils.value import check
-from cer.utils.value import deco
+from cer.value import check, deco
 from constants import (CF_ENDESA, CF_IEEE, TA_MIN, TA_MAX, TC_MIN, TC_MAX, ITER_MAX)
 
 #-----------------------------------------------------------------------------------------

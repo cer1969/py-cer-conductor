@@ -4,8 +4,7 @@
 from __future__ import division
 import math
 
-from cer.utils.value import check
-from cer.utils.value import deco
+from cer.value import check, deco
 from constants import (TA_MIN, TA_MAX, TC_MAX, ITER_MAX)
 
 #-----------------------------------------------------------------------------------------
