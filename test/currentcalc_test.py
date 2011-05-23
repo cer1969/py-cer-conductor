@@ -23,7 +23,7 @@ class TCConstructor(unittest.TestCase):
         self.assertEqual(cc.airVelocity, 2.0)
         self.assertEqual(cc.sunEffect, 1.0)
         self.assertEqual(cc.emissivity, 0.5)
-        self.assertEqual(cc.formula, cx.CF_ENDESA)
+        self.assertEqual(cc.formula, cx.CF_IEEE)
         self.assertEqual(cc.deltaTemp, 0.0001)
     
     #--------------------------------------------------------------------------
@@ -115,7 +115,7 @@ class TCMethods(unittest.TestCase):
         self.assertEqual(self.cc.getCurrent(25.0, 25.0), 0.0)
         self.assertEqual(self.cc.getCurrent(30.0, 25.0), 0.0)
         
-        self.cc.formula = cx.CF_ENDESA
+        self.cc.formula = cx.CF_CLASSIC
         self.assertAlmostEqual(self.cc.getCurrent(25.0, 50.0), 517.7, 1)
         self.assertAlmostEqual(self.cc.getCurrent(30.0, 60.0), 585.4, 1)
         self.assertAlmostEqual(self.cc.getCurrent(10.0, 30.0), 438.4, 1)
@@ -125,7 +125,7 @@ class TCMethods(unittest.TestCase):
         amp2 = self.cc.getCurrent(3.0, 30.0)
         self.assertNotEqual(amp1, amp2)
         
-        self.cc.formula = cx.CF_ENDESA
+        self.cc.formula = cx.CF_CLASSIC
         self.cc.sunEffect = 1.0
         amp1 = self.cc.getCurrent(25.0, 50.0)
         self.cc.sunEffect = 0.0
