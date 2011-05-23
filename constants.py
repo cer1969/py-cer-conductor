@@ -3,7 +3,7 @@
 """Define constats for cer.conductor
 
 Formula to use in CurrentCalc for current calculations
-CF_ENDESA = "ENDESA"    Identifies ENDESA formula
+CF_CLASSIC = "CLASSIC"    Identifies CLASSIC formula
 CF_IEEE   = "IEEE"      Identifies IEEE formula
 
 Ambient temperature in °C
@@ -27,14 +27,14 @@ TENSION_MAX = 50000    Maximum conductor tension
 
 #-----------------------------------------------------------------------------------------
 
-__all__ = ['CF_ENDESA', 'CF_IEEE', 'TA_MIN', 'TA_MAX', 'TC_MIN', 'TC_MAX', 'ITER_MAX',
+__all__ = ['CF_CLASSIC', 'CF_IEEE', 'TA_MIN', 'TA_MAX', 'TC_MIN', 'TC_MAX', 'ITER_MAX',
            'TENSION_MAX']
 
 #-----------------------------------------------------------------------------------------
 
 # Current calculus formulas
-CF_ENDESA = "CF ENDESA"
-CF_IEEE   = "CF IEEE"
+CF_CLASSIC = "CLASSIC"
+CF_IEEE   = "IEEE"
 
 # Ambient temperature
 TA_MIN = -90.0

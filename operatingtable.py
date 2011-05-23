@@ -4,7 +4,7 @@
 from __future__ import division
 
 from cer.value import check, deco
-from constants import (CF_ENDESA, CF_IEEE, TC_MIN, TC_MAX)
+from constants import (CF_CLASSIC, CF_IEEE, TC_MIN, TC_MAX)
 
 #-----------------------------------------------------------------------------------------
 
@@ -152,7 +152,7 @@ class OperatingTable(list):
     def _getFormula(self):
         return self[0].currentcalc.formula
     
-    @deco.isIn([CF_ENDESA, CF_IEEE])
+    @deco.isIn([CF_CLASSIC, CF_IEEE])
     def _setFormula(self, value):
         for i in self:
             i.currentcalc.formula = value

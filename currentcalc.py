@@ -4,7 +4,7 @@
 from __future__ import division
 
 from cer.value import check, deco
-from constants import (CF_ENDESA, CF_IEEE, TA_MIN, TA_MAX, TC_MIN, TC_MAX, ITER_MAX)
+from constants import (CF_CLASSIC, CF_IEEE, TA_MIN, TA_MAX, TC_MIN, TC_MAX, ITER_MAX)
 
 #-----------------------------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ class CurrentCalc(object):
     airVelocity : Velocity of air stream [ft/seg] =   2.0
     sunEffect   : Sun effect factor (0 to 1) = 1.0
     emissivity  : Emissivity (0 to 1) = 0.5  
-    formula     : Define formula for current calculation = CF_ENDESA
+    formula     : Define formula for current calculation = CF_IEEE
     deltaTemp   : Temperature difference to determine equality [°C] = 0.0001
     
     """
@@ -47,7 +47,7 @@ class CurrentCalc(object):
         self._airVelocity = 2.0
         self._sunEffect = 1.0
         self._emissivity = 0.5
-        self._formula = CF_ENDESA
+        self._formula = CF_IEEE
         self._deltaTemp = 0.0001
 
     #-------------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ class CurrentCalc(object):
             Qc2 = Kf*(tc - ta)*(1.01 + 0.371*factor**0.52)
             if self._formula == CF_IEEE:    # IEEE criteria
                 Qc = max(Qc, Qc1, Qc2)
-            else:                           # ENDESA criteria
+            else:                           # CLASSIC criteria
                 if factor < 12000:
                     Qc = Qc2
                 else:
@@ -193,7 +193,7 @@ class CurrentCalc(object):
     def _getFormula(self):
         return self._formula
     
-    @deco.isIn([CF_ENDESA, CF_IEEE])
+    @deco.isIn([CF_CLASSIC, CF_IEEE])
     def _setFormula(self, value):
         self._formula = value
     
