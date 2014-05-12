@@ -2,3 +2,6 @@
 syntax: glob
 *.pyc
 *.tmp_*
+.project
+.pydevproject
+.settings\*.*
