@@ -41,7 +41,7 @@ TIEMPO = 15.0       # Tiempo buscado en minutos
 ac = cx.CurrentCalc(c1)
 ac.sunEffect = SOL
 
-print c1.name
+print(c1.name)
 print u"Temp. Diseño\t%s °C" % nform(TEMP_MAX_OP)
 print u"Sobrecarga\t%s %%" % nform((FACTOR-1)*100)
 print u"N° subconductores por fase\t%d" % NSC
