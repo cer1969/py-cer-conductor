@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 # CRISTIAN ECHEVERRÍA RABÍ 
 
-from __future__ import division
 import unittest
 
 import currentcalc_test, tctimecalc_test, tensioncalc_test, operatingtable_test

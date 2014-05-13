@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 # CRISTIAN ECHEVERRÍA RABÍ
 
-from __future__ import division
-
 from cer.value import check, deco
-from constants import (CF_CLASSIC, CF_IEEE, TA_MIN, TA_MAX, TC_MIN, TC_MAX, ITER_MAX)
+from .constants import (CF_CLASSIC, CF_IEEE, TA_MIN, TA_MAX, TC_MIN, TC_MAX, ITER_MAX)
 
 #-----------------------------------------------------------------------------------------
 
@@ -84,7 +81,7 @@ class CurrentCalc(object):
         Kf = 0.00739 + 0.0000227*Tm                    # Coef. conductividad term. aire [Watt/(ft x °C)]
         Qc = .283*(Rf**0.5)*(D**0.75)*(tc - ta)**1.25  # watt/ft
         
-        if V <> 0:
+        if V != 0:
             factor = D*Rf*V/Uf
             Qc1 = 0.1695*Kf*(tc - ta)*factor**0.6
             Qc2 = Kf*(tc - ta)*(1.01 + 0.371*factor**0.52)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # CRISTIAN ECHEVERRÍA RABÍ
 
 __all__ = ['Category', 'CC_CU', 'CC_AAAC', 'CC_ACAR', 'CC_ACSR', 'CC_AAC', 'CC_CUWELD',
