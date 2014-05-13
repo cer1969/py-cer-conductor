@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 # CRISTIAN ECHEVERRÍA RABÍ
 
-from __future__ import division
 import cer.conductor as cx
 
 #-----------------------------------------------------------------------------------------
@@ -41,18 +39,18 @@ TIEMPO = 15.0       # Tiempo buscado en minutos
 ac = cx.CurrentCalc(c1)
 ac.sunEffect = SOL
 
-print c1.name
-print u"Temp. Diseño\t%s °C" % nform(TEMP_MAX_OP)
-print u"Sobrecarga\t%s %%" % nform((FACTOR-1)*100)
-print u"N° subconductores por fase\t%d" % NSC
+print(c1.name)
+print("Temp. Diseño\t%s °C" % nform(TEMP_MAX_OP))
+print("Sobrecarga\t%s %%" % nform((FACTOR-1)*100))
+print("N° subconductores por fase\t%d" % NSC)
 
 txtsol = "SI" if SOL else "NO"
-print u"Efecto Sol\t%s" % txtsol
+print("Efecto Sol\t%s" % txtsol)
 
 print
-print u"MVA Inicial para alcazar T°conductor %s°C en %s minutos" % (nform(TEMP_MAX_OP), nform(TIEMPO))
-print u"Valores por línea. Considera %d subconductores por fase" % NSC
-print u"T°Amb\tT° Inicial\tMva Inicial\tMva Falla"
+print("MVA Inicial para alcazar T°conductor %s°C en %s minutos" % (nform(TEMP_MAX_OP), nform(TIEMPO)))
+print("Valores por línea. Considera %d subconductores por fase" % NSC)
+print("T°Amb\tT° Inicial\tMva Inicial\tMva Falla")
 
 scc = cx.TcTimeCalc(ac, ta=25.0)
 
@@ -64,4 +62,4 @@ for _tamb in range(10, 45, 5):
     MvaFin = MvaIni*FACTOR
     txt = "%.1f\t%.1f\t%.1f\t%.1f" % (scc.ta, Tcini, MvaIni, MvaFin)
     txt = txt.replace(".",",")
-    print txt
+    print(txt)

@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 # CRISTIAN ECHEVERRÍA RABÍ
 
-from __future__ import division
-
 from cer.value import check, deco
-from constants import (CF_CLASSIC, CF_IEEE, TC_MIN, TC_MAX)
+from .constants import (CF_CLASSIC, CF_IEEE, TC_MIN, TC_MAX)
 
 #-----------------------------------------------------------------------------------------
 
