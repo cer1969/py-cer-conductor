@@ -152,62 +152,64 @@ class CurrentCalc(object):
         return Tmed
     
     #-------------------------------------------------------------------------------------
-    # Properties methods
-    
-    def _getConductor(self):
-        return self._conductor
-    
-    def _getAltitude(self):
-        return self._altitude
-    
-    @deco.ge(0)
-    def _setAltitude(self, value):
-        self._altitude = value
-
-    def _getAirVelocity(self):
-        return self._airVelocity
-    
-    @deco.ge(0)
-    def _setAirVelocity(self, value):
-        self._airVelocity = value
-    
-    def _getSunEffect(self):
-        return self._sunEffect
-    
-    @deco.ge(0)
-    @deco.le(1)
-    def _setSunEffect(self, value):
-        self._sunEffect = value
-    
-    def _getEmissivity(self):
-        return self._emissivity
-    
-    @deco.ge(0)
-    @deco.le(1)
-    def _setEmissivity(self, value):
-        self._emissivity = value
-    
-    def _getFormula(self):
-        return self._formula
-    
-    @deco.isIn([CF_CLASSIC, CF_IEEE])
-    def _setFormula(self, value):
-        self._formula = value
-    
-    def _getDeltaTemp(self):
-        return self._deltaTemp
-    
-    @deco.gt(0)
-    def _setDeltaTemp(self, value):
-        self._deltaTemp = value
-    
-    #-------------------------------------------------------------------------------------
     # Properties
     
-    conductor   = property(_getConductor)
-    altitude    = property(_getAltitude,    _setAltitude)
-    airVelocity = property(_getAirVelocity, _setAirVelocity)
-    sunEffect   = property(_getSunEffect,   _setSunEffect)
-    emissivity  = property(_getEmissivity,  _setEmissivity)
-    formula     = property(_getFormula,     _setFormula)
-    deltaTemp   = property(_getDeltaTemp,   _setDeltaTemp)
+    @property
+    def conductor(self):
+        return self._conductor
+    
+    @property
+    def altitude(self):
+        return self._altitude
+    
+    @altitude.setter
+    def altitude(self, value):
+        check.ge(value, 0)
+        self._altitude = value
+    
+    @property
+    def airVelocity(self):
+        return self._airVelocity
+    
+    @airVelocity.setter
+    def airVelocity(self, value):
+        check.ge(value, 0)
+        self._airVelocity = value
+    
+    @property
+    def sunEffect(self):
+        return self._sunEffect
+    
+    @sunEffect.setter
+    def sunEffect(self, value):
+        check.ge(value, 0)
+        check.le(value, 1)
+        self._sunEffect = value
+    
+    @property
+    def emissivity(self):
+        return self._emissivity
+    
+    @emissivity.setter
+    def emissivity(self, value):
+        check.ge(value, 0)
+        check.le(value, 1)
+        self._emissivity = value
+    
+    @property
+    def formula(self):
+        return self._formula
+    
+    @formula.setter
+    def formula(self, value):
+        check.isIn(value, [CF_CLASSIC, CF_IEEE])
+        self._formula = value
+    
+    @property
+    def deltaTemp(self):
+        return self._deltaTemp
+    
+    @deltaTemp.setter
+    def deltaTemp(self, value):
+        check.gt(value, 0)
+        self._deltaTemp = value
