@@ -1,6 +1,6 @@
 # CRISTIAN ECHEVERRÍA RABÍ
 
-from cer.value import check, deco
+from cer.value import check
 from .constants import (CF_CLASSIC, CF_IEEE, TC_MIN, TC_MAX)
 
 #-----------------------------------------------------------------------------------------
@@ -58,23 +58,20 @@ class OperatingItem(object):
         return sal
     
     #--------------------------------------------------------------------------
-    # Properties methods
-    
-    def _getCurrentCalc(self):
-        return self._currentcalc
-    
-    def _getTempMaxOp(self):
-        return self._tempMaxOp
-    
-    def _getNsc(self):
-        return self._nsc
-    
-    #-------------------------------------------------------------------------------------
     # Properties
     
-    currentcalc  = property(_getCurrentCalc)
-    tempMaxOp    = property(_getTempMaxOp)
-    nsc          = property(_getNsc)
+    @property
+    def currentcalc(self):
+        return self._currentcalc
+    
+    @property
+    def tempMaxOp(self):
+        return self._tempMaxOp
+    
+    @property
+    def nsc(self):
+        return self._nsc
+
 
 #-----------------------------------------------------------------------------------------
 
@@ -118,46 +115,50 @@ class OperatingTable(list):
         return sal
 
     #-------------------------------------------------------------------------------------
-    # Properties methods 
-    
-    def _getAirVelocity(self):
-        return self[0].currentcalc.airVelocity
-
-    @deco.ge(0)
-    def _setAirVelocity(self, value):
-        for i in self:
-            i.currentcalc.airVelocity = value 
-    
-    def _getSunEffect(self):
-        return self[0].currentcalc.sunEffect
-    
-    @deco.ge(0)
-    @deco.le(1)
-    def _setSunEffect(self, value):
-        for i in self:
-            i.currentcalc.sunEffect = value
-    
-    def _getEmissivity(self):
-        return self[0].currentcalc.emissivity
-
-    @deco.ge(0)
-    @deco.le(1)
-    def _setEmissivity(self, value):
-        for i in self:
-            i.currentcalc.emissivity = value
-    
-    def _getFormula(self):
-        return self[0].currentcalc.formula
-    
-    @deco.isIn([CF_CLASSIC, CF_IEEE])
-    def _setFormula(self, value):
-        for i in self:
-            i.currentcalc.formula = value
-
-    #-------------------------------------------------------------------------------------
     # Properties
+    # TODO: Se deben eliminar estos métodos porque provocan confusión.
+    # TODO: Los currentcalc individuales podrían tener distintos valores
     
-    airVelocity = property(_getAirVelocity, _setAirVelocity)
-    sunEffect   = property(_getSunEffect,   _setSunEffect)
-    emissivity  = property(_getEmissivity,  _setEmissivity)
-    formula     = property(_getFormula,     _setFormula)
+#     @property
+#     def airVelocity(self):
+#         return self[0].currentcalc.airVelocity
+# 
+#     #@deco.ge(0)
+#     @airVelocity.setter
+#     def airVelocity(self, value):
+#         for i in self:
+#             i.currentcalc.airVelocity = value 
+#     
+#     def _getSunEffect(self):
+#         return self[0].currentcalc.sunEffect
+#     
+#     @deco.ge(0)
+#     @deco.le(1)
+#     def _setSunEffect(self, value):
+#         for i in self:
+#             i.currentcalc.sunEffect = value
+#     
+#     def _getEmissivity(self):
+#         return self[0].currentcalc.emissivity
+# 
+#     @deco.ge(0)
+#     @deco.le(1)
+#     def _setEmissivity(self, value):
+#         for i in self:
+#             i.currentcalc.emissivity = value
+#     
+#     def _getFormula(self):
+#         return self[0].currentcalc.formula
+#     
+#     @deco.isIn([CF_CLASSIC, CF_IEEE])
+#     def _setFormula(self, value):
+#         for i in self:
+#             i.currentcalc.formula = value
+# 
+#     #-------------------------------------------------------------------------------------
+#     # Properties
+#     
+#     #airVelocity = property(_getAirVelocity, _setAirVelocity)
+#     sunEffect   = property(_getSunEffect,   _setSunEffect)
+#     emissivity  = property(_getEmissivity,  _setEmissivity)
+#     formula     = property(_getFormula,     _setFormula)

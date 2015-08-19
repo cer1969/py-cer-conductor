@@ -2,7 +2,7 @@
 
 import math
 
-from cer.value import check, deco
+from cer.value import check
 from .constants import (TA_MIN, TA_MAX, TC_MAX, ITER_MAX)
 
 #-----------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ class TcTimeCalc(object):
         check.gt(currentcalc.conductor.hcap, 0)
         
         self._currentcalc = currentcalc
-        self._setTa(ta)
+        self.ta = ta
         self._timeStep  = 1.0
         self._deltaIc   = 0.01
     
@@ -50,11 +50,11 @@ class TcTimeCalc(object):
     def getCurrent(self, tc):
         """Shortcut for currentcalc.getCurrent(ta, tc)"""
         return self._currentcalc.getCurrent(self._ta, tc)
-
+    
     def getTc(self, ic):
         """Shortcut for currentcalc.getTc(ta, ic)"""
         return self._currentcalc.getTc(self._ta, ic)
-
+    
     def getData(self, tcx, icfin, lapse, timex=0):
         """Returns TcTimeData instance
         tcx   : Conductor temperature to start calculus [°C]
@@ -161,46 +161,45 @@ class TcTimeCalc(object):
         return ibmed
     
     #-------------------------------------------------------------------------------------
-    # Properties methods
-    
-    def _getCurrentCalc(self):
-        return self._currentcalc
-    
-    def _getIcmax(self):
-        return self._icmax
-    
-    def _getTa(self):
-        return self._ta
-    
-    @deco.ge(TA_MIN)
-    @deco.le(TA_MAX)
-    def _setTa(self, value):
-        self._ta = value
-        self._icmax = self.getCurrent(TC_MAX)
-    
-    def _getTimeStep(self):
-        return self._timeStep
-    
-    @deco.gt(0)
-    @deco.le(60)
-    def _setTimeStep(self, value):
-        self._timeStep = value
-    
-    def _getDeltaIc(self):
-        return self._deltaIc
-    
-    @deco.gt(0)
-    def _setDeltaIc(self, value):
-        self._deltaIc = value
-    
-    #-------------------------------------------------------------------------------------
     # Properties
     
-    currentcalc  = property(_getCurrentCalc)
-    icmax        = property(_getIcmax)
-    ta           = property(_getTa,       _setTa)
-    timeStep     = property(_getTimeStep, _setTimeStep)
-    deltaIc      = property(_getDeltaIc,  _setDeltaIc)
+    @property
+    def currentcalc(self):
+        return self._currentcalc
+    
+    @property
+    def icmax(self):
+        return self._icmax
+    
+    @property
+    def ta(self):
+        return self._ta
+    
+    @ta.setter
+    def ta(self, value):
+        check.ge(value, TA_MIN)
+        check.le(value, TA_MAX)
+        self._ta = value        
+        self._icmax = self.getCurrent(TC_MAX)
+    
+    @property
+    def timeStep(self):
+        return self._timeStep
+    
+    @timeStep.setter
+    def timeStep(self, value):
+        check.gt(value, 0)
+        check.le(value, 60)
+        self._timeStep = value
+    
+    @property
+    def deltaIc(self):
+        return self._deltaIc
+    
+    @deltaIc.setter
+    def deltaIc(self, value):
+        check.gt(value, 0)
+        self._deltaIc = value
 
 
 #-----------------------------------------------------------------------------------------
@@ -225,7 +224,7 @@ class TcTimeData(tuple):
         check.gt(len(data), 1)
         
         t = tuple.__new__(cls, data)
-                
+        
         tlist = [x[1] for x in t]
         t._tempMin = min(tlist)
         t._tempMax = max(tlist)
@@ -276,29 +275,24 @@ class TcTimeData(tuple):
         return (t - t0)*(v1 - v0)/(t1 - t0) + v0
     
     #-------------------------------------------------------------------------------------
-    # Properties methods
-    
-    def _isGrowing(self):
-        return self._growing
-    
-    def _getTempMin(self):
-        return self._tempMin
-    
-    def _getTempMax(self):
-        return self._tempMax
-    
-    def _getTimeMin(self):
-        return self[0][0]
-
-    def _getTimeMax(self):
-        return self[-1][0]
-    
-    #-------------------------------------------------------------------------------------
     # Properties
     
-    growing = property(_isGrowing)
-    tempMin = property(_getTempMin)
-    tempMax = property(_getTempMax)
-    timeMin = property(_getTimeMin)
-    timeMax = property(_getTimeMax)
+    @property
+    def growing(self):
+        return self._growing
     
+    @property
+    def tempMin(self):
+        return self._tempMin
+    
+    @property
+    def tempMax(self):
+        return self._tempMax
+    
+    @property
+    def timeMin(self):
+        return self[0][0]
+    
+    @property
+    def timeMax(self):
+        return self[-1][0]
