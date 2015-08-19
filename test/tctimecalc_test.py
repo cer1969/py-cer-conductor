@@ -70,6 +70,7 @@ class TCProperties(unittest.TestCase):
         
         self.assertRaises(ValueError, self.SetValue, "timeStep", -0.1)
         self.assertRaises(ValueError, self.SetValue, "timeStep",  0.0)
+        self.assertRaises(ValueError, self.SetValue, "timeStep",  61.0)
         
         self.assertRaises(ValueError, self.SetValue, "deltaIc", -0.1)
         self.assertRaises(ValueError, self.SetValue, "deltaIc",  0.0)

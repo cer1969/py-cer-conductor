@@ -187,120 +187,124 @@ class TensionCalc(object):
         return math.sqrt(FH**2 + FV**2)
     
     #-------------------------------------------------------------------------------------
-    # Properties methods
-    
-    def _getConductor(self):
-        return self._conductor
-    
-    def _getIceLoadRef(self):
-        return self.getIceLoad(self._iceThickRef)
-    
-    def _getIceLoadCal(self):
-        return self.getIceLoad(self._iceThickCal)
-    
-    def _getWindLoadRef(self):
-        return self.getWindLoad(self._iceThickRef, self._windPressureRef)
-    
-    def _getWindLoadCal(self):
-        return self.getWindLoad(self._iceThickCal, self._windPressureCal)
-    
-    def _getTransLoadRef(self):
-        return self.getTransLoad(self._iceThickRef, self._windPressureRef)
-    
-    def _getTransLoadCal(self):
-        return self.getTransLoad(self._iceThickCal, self._windPressureCal)
-    
-    def _getTensionFactorRef(self):
-        return self._tensionFactorRef
-    
-    @deco.ge(0)
-    @deco.le(1)
-    def _setTensionFactorRef(self, value):
-        self._tensionFactorRef = value
-    
-    def _getTensionRef(self):
-        return self._tensionFactorRef*self._conductor.strength
-    
-    @deco.ge(0)
-    def _setTensionRef(self, value):
-        self._tensionFactorRef = value/self._conductor.strength
-    
-    def _getTempRef(self):
-        return self._tempRef
-    
-    def _setTempRef(self, value):
-        self._tempRef = value
-    
-    def _getCreepFactorRef(self):
-        return self._creepFactorRef
-    
-    @deco.ge(0)
-    @deco.le(1)
-    def _setCreepFactorRef(self, value):
-        self._creepFactorRef = value
-    
-    def _getIceThickRef(self):
-        return self._iceThickRef
-    
-    @deco.ge(0)
-    def _setIceThickRef(self, value):
-        self._iceThickRef = value
-    
-    def _getWindPressureRef(self):
-        return self._windPressureRef
-    
-    @deco.ge(0)
-    def _setWindPressureRef(self, value):
-        self._windPressureRef = value
-    
-    def _getCreepFactorCal(self):
-        return self._creepFactorCal
-    
-    @deco.ge(0)
-    @deco.le(1)
-    def _setCreepFactorCal(self, value):
-        self._creepFactorCal = value
-    
-    def _getIceThickCal(self):
-        return self._iceThickCal
-    
-    @deco.ge(0)
-    def _setIceThickCal(self, value):
-        self._iceThickCal = value
-    
-    def _getWindPressureCal(self):
-        return self._windPressureCal
-    
-    @deco.ge(0)
-    def _setWindPressureCal(self, value):
-        self._windPressureCal = value
-    
-    def _getDeltaTension(self):
-        return self._deltaTension
-    
-    @deco.gt(0)
-    def _setDeltaTension(self, value):
-        self._deltaTension = value
-    
-    #-------------------------------------------------------------------------------------
     # Properties
     
-    conductor    = property(_getConductor)
-    iceLoadRef   = property(_getIceLoadRef)
-    iceLoadCal   = property(_getIceLoadCal)
-    windLoadRef  = property(_getWindLoadRef)
-    windLoadCal  = property(_getWindLoadCal)
-    transLoadRef = property(_getTransLoadRef)
-    transLoadCal = property(_getTransLoadCal)
+    @property
+    def conductor(self):
+        return self._conductor
     
-    tensionFactorRef = property(_getTensionFactorRef, _setTensionFactorRef)
-    tensionRef       = property(_getTensionRef,       _setTensionRef)
-    tempRef          = property(_getTempRef,          _setTempRef)
-    creepFactorRef   = property(_getCreepFactorRef,   _setCreepFactorRef)
-    iceThickRef      = property(_getIceThickRef,      _setIceThickRef)
-    windPressureRef  = property(_getWindPressureRef,  _setWindPressureRef)
-    creepFactorCal   = property(_getCreepFactorCal,   _setCreepFactorCal)
-    iceThickCal      = property(_getIceThickCal,      _setIceThickCal)
-    windPressureCal  = property(_getWindPressureCal,  _setWindPressureCal)
-    deltaTension     = property(_getDeltaTension,     _setDeltaTension)
+    @property
+    def iceLoadRef(self):
+        return self.getIceLoad(self._iceThickRef)
     
+    @property
+    def iceLoadCal(self):
+        return self.getIceLoad(self._iceThickCal)
+    
+    @property
+    def windLoadRef(self):
+        return self.getWindLoad(self._iceThickRef, self._windPressureRef)
+    
+    @property
+    def windLoadCal(self):
+        return self.getWindLoad(self._iceThickCal, self._windPressureCal)
+    
+    @property
+    def transLoadRef(self):
+        return self.getTransLoad(self._iceThickRef, self._windPressureRef)
+    
+    @property
+    def transLoadCal(self):
+        return self.getTransLoad(self._iceThickCal, self._windPressureCal)
+    
+    @property
+    def tensionFactorRef(self):
+        return self._tensionFactorRef
+    
+    @tensionFactorRef.setter
+    def tensionFactorRef(self, value):
+        check.ge(value, 0)
+        check.le(value, 1)
+        self._tensionFactorRef = value
+    
+    @property
+    def tensionRef(self):
+        return self._tensionFactorRef*self._conductor.strength
+    
+    @tensionRef.setter
+    def tensionRef(self, value):
+        check.ge(value, 0)
+        self._tensionFactorRef = value/self._conductor.strength
+    
+    @property
+    def tempRef(self):
+        return self._tempRef
+    
+    @tempRef.setter
+    def tempRef(self, value):
+        self._tempRef = value
+    
+    @property
+    def creepFactorRef(self):
+        return self._creepFactorRef
+    
+    @creepFactorRef.setter
+    def creepFactorRef(self, value):
+        check.ge(value, 0)
+        check.le(value, 1)
+        self._creepFactorRef = value
+    
+    @property
+    def iceThickRef(self):
+        return self._iceThickRef
+    
+    @iceThickRef.setter
+    def iceThickRef(self, value):
+        check.ge(value, 0)
+        self._iceThickRef = value
+    
+    @property
+    def windPressureRef(self):
+        return self._windPressureRef
+    
+    @windPressureRef.setter
+    def windPressureRef(self, value):
+        check.ge(value, 0)
+        self._windPressureRef = value
+    
+    @property
+    def creepFactorCal(self):
+        return self._creepFactorCal
+    
+    @creepFactorCal.setter
+    def creepFactorCal(self, value):
+        check.ge(value, 0)
+        check.le(value, 1)
+        self._creepFactorCal = value
+    
+    @property
+    def iceThickCal(self):
+        return self._iceThickCal
+    
+    @iceThickCal.setter
+    def iceThickCal(self, value):
+        check.ge(value, 0)
+        self._iceThickCal = value
+    
+    @property
+    def windPressureCal(self):
+        return self._windPressureCal
+    
+    @windPressureCal.setter
+    def windPressureCal(self, value):
+        check.ge(value, 0)
+        self._windPressureCal = value
+
+    @property
+    def deltaTension(self):
+        return self._deltaTension
+    
+    @deltaTension.setter
+    def deltaTension(self, value):
+        check.gt(value, 0)
+        self._deltaTension = value

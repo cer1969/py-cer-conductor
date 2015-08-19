@@ -1,6 +1,6 @@
 # CRISTIAN ECHEVERRÍA RABÍ
 
-from cer.value import check, deco
+from cer.value import check
 from .constants import (CF_CLASSIC, CF_IEEE, TA_MIN, TA_MAX, TC_MIN, TC_MAX, ITER_MAX)
 
 #-----------------------------------------------------------------------------------------
