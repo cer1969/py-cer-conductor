@@ -1,7 +1,7 @@
 # CRISTIAN ECHEVERRÍA RABÍ
 
-from cer.value import check
-from .constants import (CF_CLASSIC, CF_IEEE, TC_MIN, TC_MAX)
+from cer.value.checker import Check
+from .constants import (TC_MIN, TC_MAX)
 
 #-----------------------------------------------------------------------------------------
 
@@ -32,9 +32,8 @@ class OperatingItem(object):
         """
         currentcalc.altitude = altitude
         currentcalc.emissivity = emissivity
-        check.ge(tempMaxOp, TC_MIN)
-        check.le(tempMaxOp, TC_MAX)
-        check.ge(nsc, 1)
+        Check(tempMaxOp).ge(TC_MIN).le(TC_MAX)
+        Check(nsc).ge(1)
         
         self._currentcalc = currentcalc
         self._tempMaxOp = tempMaxOp
