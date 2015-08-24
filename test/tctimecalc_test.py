@@ -170,6 +170,7 @@ class TCMethods(unittest.TestCase):
         lapse = 5*60
         
         curva1 = self.scc.getData(Tcini, Ifin, lapse, timex=0)
+        
         Tcx = curva1.getTc(60*1)  # Tc luego de 1 minuto
         curva2 = self.scc.getData(Tcx, Ifin, lapse - 1*60, timex=1*60)
         
@@ -182,9 +183,9 @@ class TCMethods(unittest.TestCase):
         self.assertAlmostEqual(curva1.getTc(3.0*60), curva2.getTc(3.0*60), 1)
         
         # Verifica corriente inicial
-        I = self.scc.getIcini(48, Ifin/Iini, curva1.getTime(48))
+        I = self.scc.getIcini(48, Ifin/Iini, curva1.getTime(48)+0.0001)
         self.assertAlmostEqual(I, Iini, 1)
-        I = self.scc.getIcini(50, Ifin/Iini, curva1.getTime(50))
+        I = self.scc.getIcini(50, Ifin/Iini, curva1.getTime(50)+0.0001)
         self.assertAlmostEqual(I, Iini, 1)
         
         # Verifica corriente final

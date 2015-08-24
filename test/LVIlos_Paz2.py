@@ -37,6 +37,10 @@ TIEMPO = 15.0       # Tiempo buscado en minutos
 #-----------------------------------------------------------------------------------------
 
 ac = cx.CurrentCalc(c1)
+#print (ac.getCurrent(50, 86))
+#print(ac.getTa(86, 653))
+print(ac.getTa(cx.TC_MIN, 0))
+#print(ac.getTc(cx.TA_MIN, 0))
 ac.sunEffect = SOL
 
 print(c1.name)

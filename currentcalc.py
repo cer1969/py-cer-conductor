@@ -1,6 +1,6 @@
 # CRISTIAN ECHEVERRÍA RABÍ
 
-from cer.value import check
+from cer.value.checker import Check
 from .constants import (CF_CLASSIC, CF_IEEE, TA_MIN, TA_MAX, TC_MIN, TC_MAX, ITER_MAX)
 
 #-----------------------------------------------------------------------------------------
@@ -33,10 +33,9 @@ class CurrentCalc(object):
         conductor : Conductor instance. 
         Valid values are required for r25, diameter and category.alpha
         """
-        check.gt(conductor.r25, 0)
-        check.gt(conductor.diameter, 0)
-        check.gt(conductor.category.alpha, 0)
-        check.lt(conductor.category.alpha, 1)
+        Check(conductor.r25).gt(0)
+        Check(conductor.diameter).gt(0)
+        Check(conductor.category.alpha).gt(0).lt(1)
         
         self._conductor = conductor
         
@@ -46,7 +45,7 @@ class CurrentCalc(object):
         self._emissivity = 0.5
         self._formula = CF_IEEE
         self._deltaTemp = 0.0001
-
+    
     #-------------------------------------------------------------------------------------
     # Public methods
     
@@ -54,8 +53,7 @@ class CurrentCalc(object):
         """Returns resistance [Ohm/km]
         tc : Conductor temperature [°C]
         """
-        check.ge(tc, TC_MIN)
-        check.le(tc, TC_MAX)
+        Check(tc).ge(TC_MIN).le(TC_MAX)
         return self._conductor.r25*(1 + self._conductor.category.alpha*(tc - 25))
 
     def getCurrent(self, ta, tc):
@@ -63,10 +61,8 @@ class CurrentCalc(object):
         ta : Ambient temperature [°C]
         tc : Conductor temperature [°C]
         """
-        check.ge(ta, TA_MIN)
-        check.le(ta, TA_MAX)
-        check.ge(tc, TC_MIN)
-        check.le(tc, TC_MAX)
+        Check(ta).ge(TA_MIN).le(TA_MAX)
+        Check(tc).ge(TC_MIN).le(TC_MAX)
         
         if ta >= tc:
             return 0.0
@@ -108,11 +104,13 @@ class CurrentCalc(object):
         ta : Ambient temperature [°C]
         ic : Current [ampere]
         """
-        check.ge(ic, 0)
-        check.le(ic, self.getCurrent(ta, TC_MAX))   # Ensure Tc <= TC_MAX
+        Check(ta).ge(TA_MIN).le(TA_MAX)
+        _Imin = 0
+        _Imax = self.getCurrent(ta, TC_MAX)
+        Check(ic).ge(_Imin).le(_Imax) # Ensure ta <= Tc <= TC_MAX
         
         Tmin = ta
-        Tmax = TA_MAX
+        Tmax = TC_MAX
         cuenta = 0
         while (Tmax - Tmin) > self._deltaTemp:
             Tmed = 0.5*(Tmin + Tmax)
@@ -126,17 +124,23 @@ class CurrentCalc(object):
                 err_msg = "getTc(): N° iterations > %d" % ITER_MAX
                 raise RuntimeError(err_msg)
         return Tmed
-
+    
     def getTa(self, tc, ic):
         """Returns ambient temperature [ampere]
         tc : Conductor temperature [°C]
         ic : Current [ampere]
         """
-        check.ge(ic, 0)
-        check.le(ic, self.getCurrent(TA_MIN, tc))   # Ensure Ta >= TA_MIN
+        Check(tc).ge(TC_MIN).le(TC_MAX)
         
-        Tmin = TC_MIN
-        Tmax = tc
+        _Imin = self.getCurrent(TA_MAX, tc)
+        _Imax = self.getCurrent(TA_MIN, tc)
+        Check(ic).ge(_Imin).le(_Imax) # Ensure TA_MIN =< Ta =< TA_MAX
+        
+        Tmin = TA_MIN
+        Tmax = min([TA_MAX, tc])
+        if Tmin >= Tmax:
+            return tc
+        
         cuenta = 0
         while (Tmax - Tmin) > self._deltaTemp:
             Tmed = 0.5*(Tmin + Tmax)
@@ -164,7 +168,7 @@ class CurrentCalc(object):
     
     @altitude.setter
     def altitude(self, value):
-        check.ge(value, 0)
+        Check(value).ge(0)
         self._altitude = value
     
     @property
@@ -173,7 +177,7 @@ class CurrentCalc(object):
     
     @airVelocity.setter
     def airVelocity(self, value):
-        check.ge(value, 0)
+        Check(value).ge(0)
         self._airVelocity = value
     
     @property
@@ -182,8 +186,7 @@ class CurrentCalc(object):
     
     @sunEffect.setter
     def sunEffect(self, value):
-        check.ge(value, 0)
-        check.le(value, 1)
+        Check(value).ge(0).le(1)
         self._sunEffect = value
     
     @property
@@ -192,8 +195,7 @@ class CurrentCalc(object):
     
     @emissivity.setter
     def emissivity(self, value):
-        check.ge(value, 0)
-        check.le(value, 1)
+        Check(value).ge(0).le(1)
         self._emissivity = value
     
     @property
@@ -202,7 +204,7 @@ class CurrentCalc(object):
     
     @formula.setter
     def formula(self, value):
-        check.isIn(value, [CF_CLASSIC, CF_IEEE])
+        Check(value).isIn([CF_CLASSIC, CF_IEEE])
         self._formula = value
     
     @property
@@ -211,5 +213,5 @@ class CurrentCalc(object):
     
     @deltaTemp.setter
     def deltaTemp(self, value):
-        check.gt(value, 0)
+        Check(value).gt(0)
         self._deltaTemp = value
