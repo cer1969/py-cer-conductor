@@ -28,25 +28,33 @@ class TCConstructor(unittest.TestCase):
     # Verifica errores en parámetros de conductor y category conductor al crear CurrentCalc
     
     def test_error_r25(self):
-        self.cond.r25 = -0.2
-        self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
+        self.cond.r25 = 0.001
+        self.assertTrue(cx.CurrentCalc(self.cond))
         self.cond.r25 = 0.0
+        self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
+        self.cond.r25 = -0.001
         self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
     
     def test_error_diameter(self):
-        self.cond.diameter = -0.1
-        self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
+        self.cond.diameter = 0.001
+        self.assertTrue(cx.CurrentCalc(self.cond))
         self.cond.diameter = 0.0
+        self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
+        self.cond.diameter = -0.001
         self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
     
     def test_error_alpha(self):
-        self.cate.alpha = -0.1
-        self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
+        self.cate.alpha = 0.001
+        self.assertTrue(cx.CurrentCalc(self.cond))
+        self.cate.alpha = 0.999
+        self.assertTrue(cx.CurrentCalc(self.cond))
         self.cate.alpha = 0.0
+        self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
+        self.cate.alpha = -0.001
         self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
         self.cate.alpha = 1.0
         self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
-        self.cate.alpha = 1.1
+        self.cate.alpha = 1.001
         self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
         
 #-----------------------------------------------------------------------------------------
@@ -90,6 +98,7 @@ class TCProperties(unittest.TestCase):
         
         self.assertTrue(self.SetValue("altitude", 0))
         self.assertRaises(ValueError, self.SetValue, "altitude", -0.1)
+        
         self.assertTrue(self.SetValue("airVelocity", 0))
         self.assertRaises(ValueError, self.SetValue, "airVelocity", -0.1)
         
@@ -154,7 +163,7 @@ class TCMethods(unittest.TestCase):
         self.assertNotEqual(amp1, amp2)
 
     def test_getTc(self):
-        # Varifica que los cálculos de getTc sean coherentes con getCurrent
+        # Verifica que los cálculos de getTc sean coherentes con getCurrent
         amp1 = self.cc.getCurrent(25.0, 50.0)
         amp2 = self.cc.getCurrent(35.0, 65.0)
         tc1 = self.cc.getTc(25.0, amp1)
@@ -179,7 +188,7 @@ class TCMethods(unittest.TestCase):
         self.assertRaises(ValueError, self.cc.getTc, 30, Icmax + 1)
     
     def test_getTa(self):
-        # Varifica que los cálculos de getTa sean coherentes con getCurrent
+        # Verifica que los cálculos de getTa sean coherentes con getCurrent
         amp1 = self.cc.getCurrent(25.0, 50.0)
         amp2 = self.cc.getCurrent(35.0, 65.0)
         ta1 = self.cc.getTa(50.0, amp1)
@@ -194,7 +203,7 @@ class TCMethods(unittest.TestCase):
         
         Icmax = self.cc.getCurrent(cx.TA_MIN, cx.TC_MAX)
         self.assertTrue(self.cc.getTa(cx.TC_MAX, Icmax))
-        self.assertRaises(ValueError, self.cc.getTc, cx.TC_MAX + 1, Icmax)
+        self.assertRaises(ValueError, self.cc.getTa, cx.TC_MAX + 1, Icmax)
         
         # Verifica rangos de entrada para ic
         Icmin = self.cc.getCurrent(cx.TA_MAX, 100)
