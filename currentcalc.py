@@ -21,7 +21,7 @@ class CurrentCalc(object):
     sunEffect   : Sun effect factor (0 to 1) = 1.0
     emissivity  : Emissivity (0 to 1) = 0.5  
     formula     : Define formula for current calculation = CF_IEEE
-    deltaTemp   : Temperature difference to determine equality [°C] = 0.0001
+    deltaTemp   : Temperature difference to determine equality [°C] = 0.01
     
     """
 
