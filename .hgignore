@@ -1,10 +1,8 @@
 
 syntax: glob
 *.pyc
+*.pyd
 *.tmp_*
-.project
-.pydevproject
-.settings\*.*
 *.tpl.py
-temp\*.log
+ztmp\
 Thumbs.db
