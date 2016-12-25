@@ -1,6 +1,6 @@
 # CRISTIAN ECHEVERRÍA RABÍ
 
-import cer.conductor as cx
+import cer.conductor.ccx as cx
 import unittest
 
 #-----------------------------------------------------------------------------------------
