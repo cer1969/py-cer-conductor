@@ -23,3 +23,7 @@ for i, va in enumerate([10, 15, 20, 25, 30]):
         print(txt)
         
 #print (cc.deltaTemp)
+catmk_test = cx.CategoryMaker('COPPER', 12000.0, 0.0000169, 0.0, 0.00374, 'CU')
+print(catmk_test)
+cat_test = catmk_test.get()
+print(cat_test)

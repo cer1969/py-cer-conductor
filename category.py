@@ -1,14 +1,37 @@
 # CRISTIAN ECHEVERRÍA RABÍ
 
-__all__ = ['Category', 'CC_CU', 'CC_AAAC', 'CC_ACAR', 'CC_ACSR', 'CC_AAC', 'CC_CUWELD',
+__all__ = ['Category', 'CategoryMaker', 'CC_CU', 'CC_AAAC', 'CC_ACAR', 'CC_ACSR', 'CC_AAC', 'CC_CUWELD',
            'CC_AASC', 'CC_ALL',]
+
+#-----------------------------------------------------------------------------------------
+
+class CategoryMaker(object):
+    """Mutable object to create inmutable Category objects
+       Same arguments that Category
+    """
+    
+    __slots__ = ('name', 'modelas', 'coefexp', 'creep', 'alpha', 'idx')
+    
+    def __init__(self, name='', modelas=0.0, coefexp=0.0, creep=0.0, alpha=0.0, idx=None):
+        self.name = name
+        self.modelas = modelas
+        self.coefexp = coefexp
+        self.creep = creep
+        self.alpha = alpha
+        self.idx = idx
+    
+    def get(self):
+        return Category(self.name, self.modelas, self.coefexp, self.creep, self.alpha, self.idx)
+    
+    def __str__(self):
+        return "CategoryMaker: %s" % self.name
 
 #-----------------------------------------------------------------------------------------
 
 class Category(object):
     """Represents a category of conductors with similar characteristics"""
     
-    __slots__ = ('name', 'modelas', 'coefexp', 'creep', 'alpha', 'idx')
+    __slots__ = ('_name', '_modelas', '_coefexp', '_creep', '_alpha', '_idx')
     
     def __init__(self, name='', modelas=0.0, coefexp=0.0, creep=0.0, alpha=0.0, idx=None):
         """
@@ -19,15 +42,39 @@ class Category(object):
         alpha   : Temperature coefficient of resistance [1/°C]
         idx     : Database key
         """
-        self.name = name
-        self.modelas = modelas
-        self.coefexp = coefexp
-        self.creep = creep
-        self.alpha = alpha
-        self.idx = idx
+        self._name = name
+        self._modelas = modelas
+        self._coefexp = coefexp
+        self._creep = creep
+        self._alpha = alpha
+        self._idx = idx
 
+    @property
+    def name(self):
+        return self._name
+    
+    @property
+    def modelas(self):
+        return self._modelas
+    
+    @property
+    def coefexp(self):
+        return self._coefexp
+    
+    @property
+    def creep(self):
+        return self._creep
+    
+    @property
+    def alpha(self):
+        return self._alpha
+    
+    @property
+    def idx(self):
+        return self._idx
+    
     def __str__(self):
-        return self.name
+        return "Category: %s" % self.name
 
 #-----------------------------------------------------------------------------------------
 # Category instances to use as constants
