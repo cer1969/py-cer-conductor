@@ -184,9 +184,9 @@ class TCMethods(unittest.TestCase):
         
         # Verifica corriente inicial
         I = self.scc.getIcini(48, Ifin/Iini, curva1.getTime(48)+0.0001)
-        self.assertAlmostEqual(I, Iini, 1)
+        self.assertAlmostEqual(I, Iini, 0)
         I = self.scc.getIcini(50, Ifin/Iini, curva1.getTime(50)+0.0001)
-        self.assertAlmostEqual(I, Iini, 1)
+        self.assertAlmostEqual(I, Iini, 0)
         
         # Verifica corriente final
         I = self.scc.getIcfin(48, Iini, curva1.getTime(48), tcxini=None)
