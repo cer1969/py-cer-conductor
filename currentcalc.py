@@ -33,9 +33,9 @@ class CurrentCalc(object):
         conductor : Conductor instance. 
         Valid values are required for r25, diameter and category.alpha
         """
-        Check(conductor.r25).gt(0)
-        Check(conductor.diameter).gt(0)
-        Check(conductor.category.alpha).gt(0).lt(1)
+        Check(conductor._r25).gt(0)
+        Check(conductor._diameter).gt(0)
+        Check(conductor._category._alpha).gt(0).lt(1)
         
         self._conductor = conductor
         
@@ -54,7 +54,7 @@ class CurrentCalc(object):
         tc : Conductor temperature [°C]
         """
         Check(tc).ge(TC_MIN).le(TC_MAX)
-        return self._conductor.r25*(1 + self._conductor.category.alpha*(tc - 25))
+        return self._conductor._r25*(1 + self._conductor._category._alpha*(tc - 25))
 
     def getCurrent(self, ta, tc):
         """Returns current [ampere]
@@ -67,7 +67,7 @@ class CurrentCalc(object):
         if ta >= tc:
             return 0.0
 
-        D = self._conductor.diameter/25.4              # Diámetro en pulgadas
+        D = self._conductor._diameter/25.4             # Diámetro en pulgadas
         Pb = 10**(1.880813592 - self._altitude/18336)  # Presión barométrica en cmHg
         V = self._airVelocity*3600                     # Vel. viento en pies/hora
         Rc = self.getResistance(tc)*0.0003048          # Resistencia en ohm/pies

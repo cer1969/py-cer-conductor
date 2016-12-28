@@ -9,7 +9,6 @@ class CategoryMaker(object):
     """Mutable object to create inmutable Category objects
        Same arguments that Category
     """
-    
     __slots__ = ('name', 'modelas', 'coefexp', 'creep', 'alpha', 'idx')
     
     def __init__(self, name='', modelas=0.0, coefexp=0.0, creep=0.0, alpha=0.0, idx=None):
