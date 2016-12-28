@@ -10,6 +10,8 @@ class TCConstructor(unittest.TestCase):
     def setUp(self):
         self.catemk = cx.CategoryMaker(name='AAAC (AASC)', alpha=0.003400)
         self.cate = cx.Category(name='AAAC (AASC)', alpha=0.003400)
+        self.condmk = cx.ConductorMaker(category=self.cate, name="AAAC 740,8 MCM FLINT",
+                                 diameter=25.17, r25=0.089360)
         self.cond = cx.Conductor(category=self.cate, name="AAAC 740,8 MCM FLINT",
                                  diameter=25.17, r25=0.089360)
     
@@ -29,44 +31,44 @@ class TCConstructor(unittest.TestCase):
     # Verifica errores en parámetros de conductor y category conductor al crear CurrentCalc
     
     def test_error_r25(self):
-        self.cond.r25 = 0.001
-        self.assertTrue(cx.CurrentCalc(self.cond))
-        self.cond.r25 = 0
-        self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
-        self.cond.r25 = -0.001
-        self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
+        self.condmk.r25 = 0.001
+        self.assertTrue(cx.CurrentCalc(self.condmk.get()))
+        self.condmk.r25 = 0
+        self.assertRaises(ValueError, cx.CurrentCalc, self.condmk.get())
+        self.condmk.r25 = -0.001
+        self.assertRaises(ValueError, cx.CurrentCalc, self.condmk.get())
     
     def test_error_diameter(self):
-        self.cond.diameter = 0.001
-        self.assertTrue(cx.CurrentCalc(self.cond))
-        self.cond.diameter = 0
-        self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
-        self.cond.diameter = -0.001
-        self.assertRaises(ValueError, cx.CurrentCalc, self.cond)
+        self.condmk.diameter = 0.001
+        self.assertTrue(cx.CurrentCalc(self.condmk.get()))
+        self.condmk.diameter = 0
+        self.assertRaises(ValueError, cx.CurrentCalc, self.condmk.get())
+        self.condmk.diameter = -0.001
+        self.assertRaises(ValueError, cx.CurrentCalc, self.condmk.get())
     
     def test_error_alpha(self):
         self.catemk.alpha = 0.001
-        cond = cx.Conductor(category=self.catemk, name="TEST", diameter=25.17, r25=0.089360)
+        cond = cx.Conductor(category=self.catemk.get(), name="TEST", diameter=25.17, r25=0.089360)
         self.assertTrue(cx.CurrentCalc(cond))
 
         self.catemk.alpha = 0.999
-        cond = cx.Conductor(category=self.catemk, name="TEST", diameter=25.17, r25=0.089360)
+        cond = cx.Conductor(category=self.catemk.get(), name="TEST", diameter=25.17, r25=0.089360)
         self.assertTrue(cx.CurrentCalc(cond))
 
         self.catemk.alpha = 0
-        cond = cx.Conductor(category=self.catemk, name="TEST", diameter=25.17, r25=0.089360)
+        cond = cx.Conductor(category=self.catemk.get(), name="TEST", diameter=25.17, r25=0.089360)
         self.assertRaises(ValueError, cx.CurrentCalc, cond)
 
         self.catemk.alpha = -0.001
-        cond = cx.Conductor(category=self.catemk, name="TEST", diameter=25.17, r25=0.089360)
+        cond = cx.Conductor(category=self.catemk.get(), name="TEST", diameter=25.17, r25=0.089360)
         self.assertRaises(ValueError, cx.CurrentCalc, cond)
 
         self.catemk.alpha = 1
-        cond = cx.Conductor(category=self.catemk, name="TEST", diameter=25.17, r25=0.089360)
+        cond = cx.Conductor(category=self.catemk.get(), name="TEST", diameter=25.17, r25=0.089360)
         self.assertRaises(ValueError, cx.CurrentCalc, cond)
 
         self.catemk.alpha = 1.001
-        cond = cx.Conductor(category=self.catemk, name="TEST", diameter=25.17, r25=0.089360)
+        cond = cx.Conductor(category=self.catemk.get(), name="TEST", diameter=25.17, r25=0.089360)
         self.assertRaises(ValueError, cx.CurrentCalc, cond)
         
 #-----------------------------------------------------------------------------------------

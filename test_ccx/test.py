@@ -39,22 +39,47 @@ time.clock()
 ac1 = cx.CurrentCalc(c1)
 ac2 = ccx.CurrentCalc(c2)
 
-#print (ac1.getTc(50, 1000))
-#print (ac2.getTc(50, 1000))
-print(ac1.getResistance(50))
-print(ac2.getResistance(50))
+def benchm(title, ofunc, nfunc, args, n=500):
+    print("%s - %d veces" % (title, n))
+    print("-------------------------------------------------")
+    print ("Old = %f" % ofunc(*args))
+    print ("New = %f" % nfunc(*args))
 
-t1 = time.clock()
-for i in range(1000):
-    #ac1.getTc(50, 1000)
-    ac1.getResistance(50)
+    t1 = time.clock()
+    
+    for i in range(n):
+        ofunc(*args)
+    
+    t2 = time.clock()
+    
+    for i in range(n):
+        nfunc(*args)
+    
+    t3 = time.clock()
 
-t2 = time.clock()
+    print ("Time Old = %f" % (t2 - t1))
+    print ("Time New = %f" % (t3 - t2))
+    print ("Old/New  = %f" % ((t2-t1)/(t3 - t2)))
 
-for i in range(1000):
-    #ac2.getTc(50, 1000)
-    ac2.getResistance(50)
 
-t3 = time.clock()
+benchm("getTc(50, 1000)", ac1.getTc, ac2.getTc, (50, 100))
+print(" ")
+benchm("getTa(60, 1000)", ac1.getTa, ac2.getTa, (60, 100))
+print(" ")
+benchm("getResistance(50)", ac1.getResistance, ac2.getResistance, (50,))
+print(" ")
+benchm("getCurrent(25, 50)", ac1.getCurrent, ac2.getCurrent, (25, 50))
 
-print ((t2 - t1)/(t3 - t2))
+print(" ")
+
+from cer.conductor import _ccx
+cc = _ccx.CurrentCalc(25.17, 0.08936, cx.CC_AAAC.alpha, cx.TC_MAX, cx.TA_MIN, cx.TA_MAX)
+
+
+benchm("getTc(50, 1000)", ac1.getTc, cc.getTc, (50, 100))
+print(" ")
+benchm("getTa(60, 1000)", ac1.getTa, cc.getTa, (60, 100))
+print(" ")
+benchm("getResistance(50)", ac1.getResistance, cc.getResistance, (50,))
+print(" ")
+benchm("getCurrent(25, 50)", ac1.getCurrent, cc.getCurrent, (25, 50))
