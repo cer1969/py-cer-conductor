@@ -73,7 +73,7 @@ benchm("getCurrent(25, 50)", ac1.getCurrent, ac2.getCurrent, (25, 50))
 print(" ")
 
 from cer.conductor import _ccx
-cc = _ccx.CurrentCalc(25.17, 0.08936, cx.CC_AAAC.alpha, cx.TC_MAX, cx.TA_MIN, cx.TA_MAX)
+cc = _ccx.CurrentCalc(25.17, 0.08936, cx.CC_AAAC.alpha)
 
 
 benchm("getTc(50, 1000)", ac1.getTc, cc.getTc, (50, 100))
@@ -84,5 +84,13 @@ benchm("getResistance(50)", ac1.getResistance, cc.getResistance, (50,))
 print(" ")
 benchm("getCurrent(25, 50)", ac1.getCurrent, cc.getCurrent, (25, 50))
 print(" ")
-cc = _ccx.CurrentCalc(25.17, 0.08936, cx.CC_AAAC.alpha, cx.TC_MAX, cx.TA_MIN, cx.TA_MAX)
+cc = _ccx.CurrentCalc(25.17, 0.08936, cx.CC_AAAC.alpha)
 print(cc.getCurrent(25, 50))
+
+#print(" ")
+#print(cc.getTc(-1000,1000))
+#k = _ccx._Constants()
+#k.TA_MAX = 100
+print(_ccx.k.TA_MAX)
+_ccx.k = 100
+print(_ccx.k)

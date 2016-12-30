@@ -3,25 +3,53 @@
 from libc.math cimport pow, sqrt
 
 #-----------------------------------------------------------------------------------------
+# Constants
+
+cdef int _CF_IEEE   = 0
+cdef int _CF_CLASSIC = 1
+cdef double _TA_MIN = -90.0
+cdef double _TA_MAX =  90.0
+cdef double _TC_MIN =  -90.0
+cdef double _TC_MAX = 2000.0
+cdef double _TENSION_MAX = 50000
+cdef double _ITER_MAX = 20000
+
+cdef class _Constants:
+
+    cdef readonly double TA_MIN, TA_MAX, TC_MIN, TC_MAX, TENSION_MAX, ITER_MAX
+    cdef readonly int CF_IEEE, CF_CLASSIC
+
+    def __cinit__(self):
+        self.CF_IEEE = _CF_IEEE
+        self.CF_CLASSIC = _CF_CLASSIC
+        self.TA_MIN = _TA_MIN
+        self.TA_MAX = _TA_MAX
+        self.TC_MIN = _TC_MIN
+        self.TC_MAX = _TC_MAX
+        self.TENSION_MAX = _TENSION_MAX
+        self.ITER_MAX = _ITER_MAX
+
+k = _Constants()
+
+#-----------------------------------------------------------------------------------------
 # CurrentCalc 
 
 cdef class CurrentCalc:
 
     cdef double _r25, _diameter, _alpha
     cdef double _altitude, _airVelocity, _sunEffect, _emissivity, _deltaTemp
-    cdef double _TC_MAX, _TA_MIN, _TA_MAX
     cdef int _formula
 
-    def __cinit__(self, double diameter, double r25, double alpha, 
-                  double TC_MAX, double TA_MIN, double TA_MAX):
+    def __init__(self, double diameter, double r25, double alpha):
         
+        if r25 <= 0: raise ValueError("r25 <= 0")
+        if diameter <= 0: raise ValueError("diameter <= 0")
+        if alpha <= 0: raise ValueError("alpha <= 0")
+        if alpha >= 1: raise ValueError("alpha >= 1")
+
         self._diameter = diameter
         self._r25 = r25
         self._alpha = alpha
-
-        self._TC_MAX = TC_MAX
-        self._TA_MIN = TA_MIN
-        self._TA_MAX = TA_MAX
 
         self._altitude = 300.0
         self._airVelocity = 2.0
@@ -48,10 +76,17 @@ cdef class CurrentCalc:
     #-------------------------------------------------------------------------------------
     # Private methods
 
-    cdef double _getResistance(self, double tc):
+    cdef double _getResistance(self, double tc) except -1000:
+        if tc < _TC_MIN: raise ValueError("tc < TC_MIN")
+        if tc > _TC_MAX: raise ValueError("tc > TC_MAX")
         return self._r25*(1 + self._alpha*(tc - 25))
     
-    cdef double _getCurrent(self, double ta, double tc):
+    cdef double _getCurrent(self, double ta, double tc) except -1000:
+        if ta < _TA_MIN: raise ValueError("ta < TA_MIN")
+        if ta > _TA_MAX: raise ValueError("ta > TA_MAX")
+        if tc < _TC_MIN: raise ValueError("tc < TC_MIN")
+        if tc > _TC_MAX: raise ValueError("tc > TC_MAX")
+
         cdef double D, Pb, V, Rc, Tm, Rf, Uf, Kf, Qc, factor, Qc1, Qc2, LK, MK, Qr, Qs
         
         if ta >= tc:
@@ -89,12 +124,17 @@ cdef class CurrentCalc:
         else: 
             return sqrt((Qc + Qr - Qs)/Rc)
     
-    cdef double _getTc(self, double ta, double ic):
+    cdef double _getTc(self, double ta, double ic) except -1000:
+        if ta < _TA_MIN: raise ValueError("ta < TA_MIN")
+        if ta > _TA_MAX: raise ValueError("ta > TA_MAX")
+        if ic < 0: raise ValueError("ic < 0")
+        if ic > self._getCurrent(ta, _TC_MAX): raise ValueError("ic > Imax (TC_MAX)")
+
         cdef double Tmin, Tmax, Tmed, Imed
         cdef int cuenta
         
         Tmin = ta
-        Tmax = self._TC_MAX
+        Tmax = _TC_MAX
         cuenta = 0
         while (Tmax - Tmin) > self._deltaTemp:
             Tmed = 0.5*(Tmin + Tmax)
@@ -109,12 +149,17 @@ cdef class CurrentCalc:
             #    raise RuntimeError(err_msg)
         return Tmed
     
-    cdef double _getTa(self, double tc, double ic):
+    cdef double _getTa(self, double tc, double ic) except -1000:
+        if tc < _TC_MIN: raise ValueError("tc < TC_MIN")
+        if tc > _TC_MAX: raise ValueError("tc > TC_MAX")
+        if ic < self._getCurrent(_TA_MAX, tc): raise ValueError("ic < Imin (TA_MAX)")
+        if ic > self._getCurrent(_TA_MIN, tc): raise ValueError("ic > Imax (TA_MIN)")
+        
         cdef double Tmin, Tmax, Tmed, Imed
         cdef int cuenta
         
-        Tmin = self._TA_MIN
-        Tmax = min([self._TA_MAX, tc])
+        Tmin = _TA_MIN
+        Tmax = min([_TA_MAX, tc])
         if Tmin >= Tmax:
             return tc
         

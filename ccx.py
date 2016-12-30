@@ -1,8 +1,9 @@
 # CRISTIAN ECHEVERRÍA RABÍ
 
+from ._ccx import k
 from .category import *
 from .conductor import *
-from .constants import *
+#from .constants import *
 from .currentcalc_c import *
 #from .tctimecalc import *
 #from .tensioncalc import *
@@ -10,5 +11,5 @@ from .currentcalc_c import *
 
 #-----------------------------------------------------------------------------------------
 
-version = "0.8.0"
+version = "0.9.0"
 __version__ = version
