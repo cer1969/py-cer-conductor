@@ -4,7 +4,7 @@ setlocal
 
 if not defined PYTHON_DEV goto :err_python_dev
 
-set module=_ccx
+set module=_zx
 
 if not "%~1"=="" goto :%~1
 goto :build
