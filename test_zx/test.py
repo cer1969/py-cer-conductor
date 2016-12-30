@@ -1,7 +1,7 @@
 import time
 
-import cer.conductor as cx
-from cer.conductor import ccx
+from cer.conductor import cx
+from cer.conductor import zx
 
 #-----------------------------------------------------------------------------------------
 
@@ -15,8 +15,8 @@ c1 = cx.Conductor(name = 'AAAC 740,8 MCM FLINT',
                   hcap = 0.05274,           # capacidad calórica
                   )
 
-c2 = ccx.Conductor(name = 'AAAC 740,8 MCM FLINT',
-                  category = ccx.CC_AAAC,
+c2 = zx.Conductor(name = 'AAAC 740,8 MCM FLINT',
+                  category = zx.CC_AAAC,
                   diameter = 25.17,         # en mm
                   area = 375.4,             # en mm2
                   weight = 1.035,           # en Kg/m
@@ -37,7 +37,7 @@ c2 = ccx.Conductor(name = 'AAAC 740,8 MCM FLINT',
 time.clock()
 
 ac1 = cx.CurrentCalc(c1)
-ac2 = ccx.CurrentCalc(c2)
+ac2 = zx.CurrentCalc(c2)
 
 def benchm(title, ofunc, nfunc, args, n=2000):
     print("%s - %d veces" % (title, n))
@@ -72,25 +72,23 @@ benchm("getCurrent(25, 50)", ac1.getCurrent, ac2.getCurrent, (25, 50))
 
 print(" ")
 
-from cer.conductor import _ccx
-cc = _ccx.CurrentCalc(25.17, 0.08936, cx.CC_AAAC.alpha)
+from cer.conductor import _zx
+cc = _zx.CurrentCalc(25.17, 0.08936, zx.CC_AAAC.alpha)
 
 
-benchm("getTc(50, 1000)", ac1.getTc, cc.getTc, (50, 100))
+benchm("getTc(50, 1000)", ac2.getTc, cc.getTc, (50, 100))
 print(" ")
-benchm("getTa(60, 1000)", ac1.getTa, cc.getTa, (60, 100))
+benchm("getTa(60, 1000)", ac2.getTa, cc.getTa, (60, 100))
 print(" ")
-benchm("getResistance(50)", ac1.getResistance, cc.getResistance, (50,))
+benchm("getResistance(50)", ac2.getResistance, cc.getResistance, (50,))
 print(" ")
-benchm("getCurrent(25, 50)", ac1.getCurrent, cc.getCurrent, (25, 50))
+benchm("getCurrent(25, 50)", ac2.getCurrent, cc.getCurrent, (25, 50))
 print(" ")
-cc = _ccx.CurrentCalc(25.17, 0.08936, cx.CC_AAAC.alpha)
+cc = _zx.CurrentCalc(25.17, 0.08936, zx.CC_AAAC.alpha)
 print(cc.getCurrent(25, 50))
 
 #print(" ")
 #print(cc.getTc(-1000,1000))
-#k = _ccx._Constants()
+#k = _zx._Constants()
 #k.TA_MAX = 100
-print(_ccx.k.TA_MAX)
-_ccx.k = 100
-print(_ccx.k)
+print(ac2.altitude)

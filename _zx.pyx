@@ -14,22 +14,34 @@ cdef double _TC_MAX = 2000.0
 cdef double _TENSION_MAX = 50000
 cdef double _ITER_MAX = 20000
 
-cdef class _Constants:
+CF_IEEE = _CF_IEEE
+CF_CLASSIC = _CF_CLASSIC
+TA_MIN = _TA_MIN
+TA_MAX = _TA_MAX
+TC_MIN = _TC_MIN
+TC_MAX = _TC_MAX
+TENSION_MAX = _TENSION_MAX
+ITER_MAX = _ITER_MAX
 
-    cdef readonly double TA_MIN, TA_MAX, TC_MIN, TC_MAX, TENSION_MAX, ITER_MAX
-    cdef readonly int CF_IEEE, CF_CLASSIC
+#-----------------------------------------------------------------------------------------
+# Object with inmutable constants
 
-    def __cinit__(self):
-        self.CF_IEEE = _CF_IEEE
-        self.CF_CLASSIC = _CF_CLASSIC
-        self.TA_MIN = _TA_MIN
-        self.TA_MAX = _TA_MAX
-        self.TC_MIN = _TC_MIN
-        self.TC_MAX = _TC_MAX
-        self.TENSION_MAX = _TENSION_MAX
-        self.ITER_MAX = _ITER_MAX
-
-k = _Constants()
+#cdef class _Constants:
+#
+#    cdef readonly double TA_MIN, TA_MAX, TC_MIN, TC_MAX, TENSION_MAX, ITER_MAX
+#    cdef readonly int CF_IEEE, CF_CLASSIC
+#
+#    def __cinit__(self):
+#        self.CF_IEEE = _CF_IEEE
+#        self.CF_CLASSIC = _CF_CLASSIC
+#        self.TA_MIN = _TA_MIN
+#        self.TA_MAX = _TA_MAX
+#        self.TC_MIN = _TC_MIN
+#        self.TC_MAX = _TC_MAX
+#        self.TENSION_MAX = _TENSION_MAX
+#        self.ITER_MAX = _ITER_MAX
+#
+#k = _Constants()
 
 #-----------------------------------------------------------------------------------------
 # CurrentCalc 
@@ -201,6 +213,7 @@ cdef class CurrentCalc:
     
     @altitude.setter
     def altitude(self, double v):
+        if v < 0: raise ValueError("altitude < 0")
         self._altitude = v
     
     @property
@@ -209,6 +222,7 @@ cdef class CurrentCalc:
     
     @airVelocity.setter
     def airVelocity(self, double v):
+        if v < 0: raise ValueError("airVelocity < 0")
         self._airVelocity = v
     
     @property
@@ -217,6 +231,8 @@ cdef class CurrentCalc:
     
     @sunEffect.setter
     def sunEffect(self, double v):
+        if v < 0: raise ValueError("sunEffect < 0")
+        if v > 1: raise ValueError("sunEffect > 1")
         self._sunEffect = v
     
     @property
@@ -225,6 +241,8 @@ cdef class CurrentCalc:
     
     @emissivity.setter
     def emissivity(self, double v):
+        if v < 0: raise ValueError("emissivity < 0")
+        if v > 1: raise ValueError("emissivity > 1")
         self._emissivity = v
     
     @property
@@ -233,6 +251,7 @@ cdef class CurrentCalc:
     
     @formula.setter
     def formula(self, int v):
+        if v not in [_CF_IEEE, _CF_CLASSIC]: raise ValueError("formula <> CF_IEEE, CF_CLASSIC")
         self._formula = v
     
     @property
@@ -241,4 +260,5 @@ cdef class CurrentCalc:
     
     @deltaTemp.setter
     def deltaTemp(self, double v):
+        if v <= 0: raise ValueError("deltaTemp <= 0")
         self._deltaTemp = v

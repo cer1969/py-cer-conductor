@@ -1,6 +1,6 @@
 # CRISTIAN ECHEVERRÍA RABÍ
 
-from cer.conductor import cx
+from cer.conductor import zx
 import time
 
 #-----------------------------------------------------------------------------------------
@@ -18,8 +18,8 @@ def nform(n,format="%.2f"):
 # PARÁMETROS MODIFICABLES
 
 # Línea 220 Los Vilos - Pan de Azúcar 1
-c1 = cx.Conductor(name = 'AAAC 740,8 MCM FLINT',
-                  category = cx.CC_AAAC,
+c1 = zx.Conductor(name = 'AAAC 740,8 MCM FLINT',
+                  category = zx.CC_AAAC,
                   diameter = 25.17,               # en mm
                   area = 375.4,                  # en mm2
                   weight = 1.035,                  # en Kg/m
@@ -37,11 +37,11 @@ TIEMPO = 15.0       # Tiempo buscado en minutos
 
 #-----------------------------------------------------------------------------------------
 
-ac = cx.CurrentCalc(c1)
+ac = zx.CurrentCalc(c1)
 #print (ac.getCurrent(50, 86))
 #print(ac.getTa(86, 653))
-print(ac.getTa(cx.TC_MIN, 0))
-#print(ac.getTc(cx.TA_MIN, 0))
+print(ac.getTa(zx.TC_MIN, 0))
+#print(ac.getTc(zx.TA_MIN, 0))
 ac.sunEffect = SOL
 
 print(c1.name)
@@ -57,7 +57,7 @@ print("MVA Inicial para alcazar T°conductor %s°C en %s minutos" % (nform(TEMP_
 print("Valores por línea. Considera %d subconductores por fase" % NSC)
 print("T°Amb\tT° Inicial\tMva Inicial\tMva Falla")
 
-scc = cx.TcTimeCalc(ac, ta=25.0)
+scc = zx.TcTimeCalc(ac, ta=25.0)
 
 time.clock()
 

@@ -1,20 +1,20 @@
 # CRISTIAN ECHEVERRÍA RABÍ 
 
-from cer.conductor import cx
+from cer.conductor import zx
 import time
 
 #-----------------------------------------------------------------------------------------
 
 t0 = time.clock()
 
-cab = cx.Conductor(category=cx.CC_AAAC, name="AAAC 740,8 MCM FLINT", diameter=25.17,
+cab = zx.Conductor(category=zx.CC_AAAC, name="AAAC 740,8 MCM FLINT", diameter=25.17,
                    r25=0.089360, hcap=0.052744)
-ac = cx.CurrentCalc(cab)
+ac = zx.CurrentCalc(cab)
 ac.sunEffect = 1.0
 
 # Supongamos 2 líneas en paralelo con 70% de su transferencia nominal con sol
 # Cada línea tendra una corriente Ic0 y temperatura de conductor Tc0
-scc = cx.TcTimeCalc(ac, 25.0)
+scc = zx.TcTimeCalc(ac, 25.0)
 scc.timeStep = 1
 
 # Usamos scc que ya tiene asociada la T° ambiente
