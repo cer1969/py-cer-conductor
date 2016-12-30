@@ -4,5 +4,5 @@ syntax: glob
 *.pyd
 *.tmp_*
 *.tpl.py
-ztmp\
+ztmp/
 Thumbs.db
