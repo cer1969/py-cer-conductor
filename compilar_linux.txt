@@ -1,0 +1,23 @@
+
+gcc -shared -pthread -fPIC -fwrapv -O2 -Wall -fno-strict-aliasing -I/home/cheve/miniconda3/envs/py352/include/python3.5m -o _ccx.so ztmp/_ccx.c
+
+
+
+running build_ext
+building 'cer.conductor._ccx' extension
+
+gcc -pthread -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -fPIC -I/home/cheve/miniconda3/envs/py352/include/python3.5m -c _ccx.c -o build/temp.linux-x86_64-3.5/_ccx.o
+
+_ccx.c: In function ‘__pyx_f_3cer_9conductor_4_ccx_11CurrentCalc__getTc’:
+_ccx.c:2068:10: warning: ‘__pyx_v_Tmed’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+   return __pyx_r;
+          ^
+_ccx.c: In function ‘__pyx_f_3cer_9conductor_4_ccx_11CurrentCalc__getTa’:
+_ccx.c:2258:10: warning: ‘__pyx_v_Tmed’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+   return __pyx_r;
+          ^
+
+creating /home/cheve/Devel/PyLib3/cer/conductor/cer
+creating /home/cheve/Devel/PyLib3/cer/conductor/cer/conductor
+gcc -pthread -shared -L/home/cheve/miniconda3/envs/py352/lib -Wl,-rpath=/home/cheve/miniconda3/envs/py352/lib,--no-as-needed build/temp.linux-x86_64-3.5/_ccx.o -L/home/cheve/miniconda3/envs/py352/lib -lpython3.5m -o /home/cheve/Devel/PyLib3/cer/conductor/cer/conductor/_ccx.cpython-35m-x86_64-linux-gnu.so
+
