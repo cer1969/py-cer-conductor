@@ -39,7 +39,7 @@ time.clock()
 ac1 = cx.CurrentCalc(c1)
 ac2 = ccx.CurrentCalc(c2)
 
-def benchm(title, ofunc, nfunc, args, n=500):
+def benchm(title, ofunc, nfunc, args, n=2000):
     print("%s - %d veces" % (title, n))
     print("-------------------------------------------------")
     print ("Old = %f" % ofunc(*args))
@@ -57,9 +57,9 @@ def benchm(title, ofunc, nfunc, args, n=500):
     
     t3 = time.clock()
 
-    print ("Time Old = %f" % (t2 - t1))
-    print ("Time New = %f" % (t3 - t2))
-    print ("Old/New  = %f" % ((t2-t1)/(t3 - t2)))
+    print ("Time Old = %8.0f ns/op" % (10**9*(t2 - t1)/n))
+    print ("Time New = %8.0f ns/op" % (10**9*(t3 - t2)/n))
+    print ("Old/New  = %8.2f veces" % ((t2-t1)/(t3 - t2)))
 
 
 benchm("getTc(50, 1000)", ac1.getTc, ac2.getTc, (50, 100))
