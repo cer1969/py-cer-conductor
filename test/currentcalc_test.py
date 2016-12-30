@@ -121,8 +121,8 @@ class TCProperties(unittest.TestCase):
         self.assertEqual(self.cc.formula, cx.CF_IEEE)
         self.assertTrue(self.SetValue("formula",cx.CF_IEEE))
         self.assertTrue(self.SetValue("formula",cx.CF_CLASSIC))
-        self.assertRaises(ValueError, self.SetValue, "formula", "")
-        self.assertRaises(ValueError, self.SetValue, "formula", 1)
+        self.assertRaises(ValueError, self.SetValue, "formula", -1)
+        self.assertRaises(ValueError, self.SetValue, "formula", 2)
         
     def test_deltaTemp(self):
         self.cc.deltaTemp = 0.001

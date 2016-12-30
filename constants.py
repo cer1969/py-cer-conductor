@@ -2,8 +2,8 @@
 """Define constats for cer.conductor
 
 Formula to use in CurrentCalc for current calculations
-CF_CLASSIC = "CLASSIC"    Identifies CLASSIC formula
-CF_IEEE   = "IEEE"      Identifies IEEE formula
+CF_IEEE    = 0    Identifies IEEE formula
+CF_CLASSIC = 1    Identifies CLASSIC formula
 
 Ambient temperature in °C
 TA_MIN = -90    Minimum value for ambient temperature
@@ -32,8 +32,8 @@ __all__ = ['CF_CLASSIC', 'CF_IEEE', 'TA_MIN', 'TA_MAX', 'TC_MIN', 'TC_MAX', 'ITE
 #-----------------------------------------------------------------------------------------
 
 # Current calculus formulas
-CF_CLASSIC = "CLASSIC"
-CF_IEEE   = "IEEE"
+CF_IEEE    = 0
+CF_CLASSIC = 1
 
 # Ambient temperature
 TA_MIN = -90.0
