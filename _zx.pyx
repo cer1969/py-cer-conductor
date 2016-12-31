@@ -24,44 +24,125 @@ TENSION_MAX = _TENSION_MAX
 ITER_MAX = _ITER_MAX
 
 #-----------------------------------------------------------------------------------------
-# Object with inmutable constants
+# Category 
 
-#cdef class _Constants:
-#
-#    cdef readonly double TA_MIN, TA_MAX, TC_MIN, TC_MAX, TENSION_MAX, ITER_MAX
-#    cdef readonly int CF_IEEE, CF_CLASSIC
-#
-#    def __cinit__(self):
-#        self.CF_IEEE = _CF_IEEE
-#        self.CF_CLASSIC = _CF_CLASSIC
-#        self.TA_MIN = _TA_MIN
-#        self.TA_MAX = _TA_MAX
-#        self.TC_MIN = _TC_MIN
-#        self.TC_MAX = _TC_MAX
-#        self.TENSION_MAX = _TENSION_MAX
-#        self.ITER_MAX = _ITER_MAX
-#
-#k = _Constants()
+cdef class Category:
+    
+    cdef readonly double modelas, coefexp, creep, alpha
+    cdef readonly object name, idx
+    
+    def __init__(self, object name, double modelas=0.0, double coefexp=0.0, double creep=0.0,
+                 double alpha=0.0, object idx=None):
+        self.name = name
+        self.modelas = modelas
+        self.coefexp = coefexp
+        self.creep = creep
+        self.alpha = alpha
+        self.idx = idx
+
+CC_CU     = Category('COPPER',      12000.0, 0.0000169,  0.0, 0.00374, 'CU')
+CC_AAAC   = Category('AAAC (AASC)',  6450.0, 0.0000230, 20.0, 0.00340, 'AAAC')
+CC_ACAR   = Category('ACAR',         6450.0, 0.0000250, 20.0, 0.00385, 'ACAR')
+CC_ACSR   = Category('ACSR',         8000.0, 0.0000191, 20.0, 0.00395, 'ACSR')
+CC_AAC    = Category('ALUMINUM',     5600.0, 0.0000230, 20.0, 0.00395, 'AAC')
+CC_CUWELD = Category('COPPERWELD',  16200.0, 0.0000130,  0.0, 0.00380, 'CUWELD')
+CC_AASC   = CC_AAAC
+CC_ALL    = CC_AAC
+
+#-----------------------------------------------------------------------------------------
+# CategoryMaker
+
+cdef class CategoryMaker:
+    
+    cdef public double modelas, coefexp, creep, alpha
+    cdef public object name, idx
+    
+    def __init__(self, object name, double modelas=0.0, double coefexp=0.0, double creep=0.0,
+                 double alpha=0.0, object idx=None):
+        self.name = name
+        self.modelas = modelas
+        self.coefexp = coefexp
+        self.creep = creep
+        self.alpha = alpha
+        self.idx = idx
+    
+    cdef Category _get(self):
+        return Category(self.name, self.modelas, self.coefexp, self.creep, self.alpha, self.idx)
+    
+    def get(self):
+        return self._get()
+
+#-----------------------------------------------------------------------------------------
+# Conductor
+
+cdef class Conductor:
+    
+    cdef readonly double diameter, area, weight, strength, r25, hcap
+    cdef readonly object name, idx
+    cdef readonly Category category
+    
+    def __init__(self, object name, Category category, diameter=0.0, area=0.0, weight=0.0,
+                 strength=0.0, r25=0.0, hcap=0.0, idx=None):
+        self.name = name
+        self.category = category
+        self.diameter = diameter
+        self.area = area
+        self.weight = weight
+        self.strength = strength
+        self.r25 = r25
+        self.hcap = hcap
+        self.idx = idx
+
+#-----------------------------------------------------------------------------------------
+# ConductorMaker
+
+cdef class ConductorMaker:
+    
+    cdef public double diameter, area, weight, strength, r25, hcap
+    cdef public object name, idx
+    cdef public Category category
+    
+    def __init__(self, object name, Category category, diameter=0.0, area=0.0, weight=0.0,
+                 strength=0.0, r25=0.0, hcap=0.0, idx=None):
+        self.name = name
+        self.category = category
+        self.diameter = diameter
+        self.area = area
+        self.weight = weight
+        self.strength = strength
+        self.r25 = r25
+        self.hcap = hcap
+        self.idx = idx
+    
+    cdef Conductor _get(self):
+        return Conductor(self.name, self.category, self.diameter, self.area, self.weight, 
+                         self.strength, self.r25, self.hcap, self.idx)
+    
+    def get(self):
+        return self._get()
 
 #-----------------------------------------------------------------------------------------
 # CurrentCalc 
 
 cdef class CurrentCalc:
 
-    cdef double _r25, _diameter, _alpha
+    cdef readonly Conductor conductor
+    cdef readonly double r25, diameter, alpha
     cdef double _altitude, _airVelocity, _sunEffect, _emissivity, _deltaTemp
     cdef int _formula
 
-    def __init__(self, double diameter, double r25, double alpha):
+    def __init__(self, Conductor conductor):
+    #def __init__(self, double diameter, double r25, double alpha):
         
-        if r25 <= 0: raise ValueError("r25 <= 0")
-        if diameter <= 0: raise ValueError("diameter <= 0")
-        if alpha <= 0: raise ValueError("alpha <= 0")
-        if alpha >= 1: raise ValueError("alpha >= 1")
+        if conductor.diameter <= 0: raise ValueError("diameter <= 0")
+        if conductor.r25 <= 0: raise ValueError("r25 <= 0")
+        if conductor.category.alpha <= 0: raise ValueError("category.alpha <= 0")
+        if conductor.category.alpha >= 1: raise ValueError("category.alpha >= 1")
 
-        self._diameter = diameter
-        self._r25 = r25
-        self._alpha = alpha
+        self.conductor = conductor
+        self.diameter = conductor.diameter
+        self.r25 = conductor.r25
+        self.alpha = conductor.category.alpha
 
         self._altitude = 300.0
         self._airVelocity = 2.0
@@ -91,7 +172,7 @@ cdef class CurrentCalc:
     cdef double _getResistance(self, double tc) except -1000:
         if tc < _TC_MIN: raise ValueError("tc < TC_MIN")
         if tc > _TC_MAX: raise ValueError("tc > TC_MAX")
-        return self._r25*(1 + self._alpha*(tc - 25))
+        return self.r25*(1 + self.alpha*(tc - 25))
     
     cdef double _getCurrent(self, double ta, double tc) except -1000:
         if ta < _TA_MIN: raise ValueError("ta < TA_MIN")
@@ -104,7 +185,7 @@ cdef class CurrentCalc:
         if ta >= tc:
             return 0.0
         
-        D = self._diameter/25.4                                             # Diámetro en pulgadas
+        D = self.diameter/25.4                                              # Diámetro en pulgadas
         Pb = pow(10, 1.880813592 - self._altitude/18336)                    # Presión barométrica en cmHg
         V = self._airVelocity*3600                                          # Vel. viento en pies/hora
         Rc = self._getResistance(tc)*0.0003048                              # Resistencia en ohm/pies
@@ -188,21 +269,6 @@ cdef class CurrentCalc:
             #    err_msg = "getTa(): N° iterations > %d" % ITER_MAX
             #    raise RuntimeError(err_msg)
         return Tmed
-
-    #-------------------------------------------------------------------------------------
-    # Read-only properties
-
-    @property
-    def diameter(self):
-        return self._diameter
-    
-    @property
-    def r25(self):
-        return self._r25
-    
-    @property
-    def alpha(self):
-        return self._alpha
     
     #-------------------------------------------------------------------------------------
     # Read-write properties
