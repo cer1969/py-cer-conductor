@@ -70,25 +70,3 @@ benchm("getResistance(50)", ac1.getResistance, ac2.getResistance, (50,))
 print(" ")
 benchm("getCurrent(25, 50)", ac1.getCurrent, ac2.getCurrent, (25, 50))
 
-print(" ")
-
-from cer.conductor import _zx
-cc = _zx.CurrentCalc(25.17, 0.08936, zx.CC_AAAC.alpha)
-
-
-benchm("getTc(50, 1000)", ac2.getTc, cc.getTc, (50, 100))
-print(" ")
-benchm("getTa(60, 1000)", ac2.getTa, cc.getTa, (60, 100))
-print(" ")
-benchm("getResistance(50)", ac2.getResistance, cc.getResistance, (50,))
-print(" ")
-benchm("getCurrent(25, 50)", ac2.getCurrent, cc.getCurrent, (25, 50))
-print(" ")
-cc = _zx.CurrentCalc(25.17, 0.08936, zx.CC_AAAC.alpha)
-print(cc.getCurrent(25, 50))
-
-#print(" ")
-#print(cc.getTc(-1000,1000))
-#k = _zx._Constants()
-#k.TA_MAX = 100
-print(ac2.altitude)
