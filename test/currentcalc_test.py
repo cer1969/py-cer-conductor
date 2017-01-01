@@ -8,12 +8,10 @@ import unittest
 class TCConstructor(unittest.TestCase):
 
     def setUp(self):
-        self.catemk = cx.CategoryMaker(name='AAAC (AASC)', alpha=0.003400)
-        self.cate = cx.Category(name='AAAC (AASC)', alpha=0.003400)
-        self.condmk = cx.ConductorMaker(category=self.cate, name="AAAC 740,8 MCM FLINT",
-                                 diameter=25.17, r25=0.089360)
-        self.cond = cx.Conductor(category=self.cate, name="AAAC 740,8 MCM FLINT",
-                                 diameter=25.17, r25=0.089360)
+        self.catemk = cx.CategoryMaker('AAAC (AASC)', alpha=0.003400)
+        self.cate = cx.Category('AAAC (AASC)', alpha=0.003400)
+        self.condmk = cx.ConductorMaker("AAAC 740,8 MCM FLINT", self.cate, diameter=25.17, r25=0.089360)
+        self.cond = cx.Conductor("AAAC 740,8 MCM FLINT", self.cate, diameter=25.17, r25=0.089360)
     
     def test_defaults(self):
         # Verifica que se asignen valores por defecto al crear CurrentCalc
@@ -48,27 +46,27 @@ class TCConstructor(unittest.TestCase):
     
     def test_error_alpha(self):
         self.catemk.alpha = 0.001
-        cond = cx.Conductor(category=self.catemk.get(), name="TEST", diameter=25.17, r25=0.089360)
+        cond = cx.Conductor("TEST", self.catemk.get(), diameter=25.17, r25=0.089360)
         self.assertTrue(cx.CurrentCalc(cond))
 
         self.catemk.alpha = 0.999
-        cond = cx.Conductor(category=self.catemk.get(), name="TEST", diameter=25.17, r25=0.089360)
+        cond = cx.Conductor("TEST", self.catemk.get(), diameter=25.17, r25=0.089360)
         self.assertTrue(cx.CurrentCalc(cond))
 
         self.catemk.alpha = 0
-        cond = cx.Conductor(category=self.catemk.get(), name="TEST", diameter=25.17, r25=0.089360)
+        cond = cx.Conductor("TEST", self.catemk.get(), diameter=25.17, r25=0.089360)
         self.assertRaises(ValueError, cx.CurrentCalc, cond)
 
         self.catemk.alpha = -0.001
-        cond = cx.Conductor(category=self.catemk.get(), name="TEST", diameter=25.17, r25=0.089360)
+        cond = cx.Conductor("TEST", self.catemk.get(), diameter=25.17, r25=0.089360)
         self.assertRaises(ValueError, cx.CurrentCalc, cond)
 
         self.catemk.alpha = 1
-        cond = cx.Conductor(category=self.catemk.get(), name="TEST", diameter=25.17, r25=0.089360)
+        cond = cx.Conductor("TEST", self.catemk.get(), diameter=25.17, r25=0.089360)
         self.assertRaises(ValueError, cx.CurrentCalc, cond)
 
         self.catemk.alpha = 1.001
-        cond = cx.Conductor(category=self.catemk.get(), name="TEST", diameter=25.17, r25=0.089360)
+        cond = cx.Conductor("TEST", self.catemk.get(), diameter=25.17, r25=0.089360)
         self.assertRaises(ValueError, cx.CurrentCalc, cond)
         
 #-----------------------------------------------------------------------------------------
@@ -76,8 +74,7 @@ class TCConstructor(unittest.TestCase):
 class TCProperties(unittest.TestCase):
     
     def setUp(self):
-        self.cond = cx.Conductor(category=cx.CC_AAAC, name="AAAC 740,8 MCM FLINT",
-                            diameter=25.17, r25=0.089360)
+        self.cond = cx.Conductor("AAAC 740,8 MCM FLINT", cx.CC_AAAC, diameter=25.17, r25=0.089360)
         self.cc = cx.CurrentCalc(self.cond)
     
     def SetValue(self, prop, value):
@@ -136,8 +133,7 @@ class TCProperties(unittest.TestCase):
 class TCMethods(unittest.TestCase):
     
     def setUp(self):
-        cond = cx.Conductor(category=cx.CC_AAAC, name="AAAC 740,8 MCM FLINT",
-                            diameter=25.17, r25=0.089360)
+        cond = cx.Conductor("AAAC 740,8 MCM FLINT", cx.CC_AAAC, diameter=25.17, r25=0.089360)
         self.cc = cx.CurrentCalc(cond)
 
     def test_getResistance(self):

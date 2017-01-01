@@ -31,7 +31,7 @@ cdef class Category:
     cdef readonly double modelas, coefexp, creep, alpha
     cdef readonly object name, idx
     
-    def __init__(self, object name, double modelas=0.0, double coefexp=0.0, double creep=0.0,
+    def __cinit__(self, object name, double modelas=0.0, double coefexp=0.0, double creep=0.0,
                  double alpha=0.0, object idx=None):
         self.name = name
         self.modelas = modelas
@@ -57,7 +57,7 @@ cdef class CategoryMaker:
     cdef public double modelas, coefexp, creep, alpha
     cdef public object name, idx
     
-    def __init__(self, object name, double modelas=0.0, double coefexp=0.0, double creep=0.0,
+    def __cinit__(self, object name, double modelas=0.0, double coefexp=0.0, double creep=0.0,
                  double alpha=0.0, object idx=None):
         self.name = name
         self.modelas = modelas
@@ -81,7 +81,7 @@ cdef class Conductor:
     cdef readonly object name, idx
     cdef readonly Category category
     
-    def __init__(self, object name, Category category, diameter=0.0, area=0.0, weight=0.0,
+    def __cinit__(self, object name, Category category, diameter=0.0, area=0.0, weight=0.0,
                  strength=0.0, r25=0.0, hcap=0.0, idx=None):
         self.name = name
         self.category = category
@@ -102,7 +102,7 @@ cdef class ConductorMaker:
     cdef public object name, idx
     cdef public Category category
     
-    def __init__(self, object name, Category category, diameter=0.0, area=0.0, weight=0.0,
+    def __cinit__(self, object name, Category category, diameter=0.0, area=0.0, weight=0.0,
                  strength=0.0, r25=0.0, hcap=0.0, idx=None):
         self.name = name
         self.category = category
@@ -131,7 +131,7 @@ cdef class CurrentCalc:
     cdef double _altitude, _airVelocity, _sunEffect, _emissivity, _deltaTemp
     cdef int _formula
 
-    def __init__(self, Conductor conductor):
+    def __cinit__(self, Conductor conductor):
     #def __init__(self, double diameter, double r25, double alpha):
         
         if conductor.diameter <= 0: raise ValueError("diameter <= 0")

@@ -11,8 +11,8 @@ class ConductorMaker(object):
     __slots__ = ('name', 'category', 'diameter', 'area', 'weight', 'strength', 'r25',
                  'hcap', 'idx')
     
-    def __init__(self, name='', category=None, diameter=0.0, area=0.0, weight=0.0, strength=0.0,
-                 r25=0.0, hcap=0.0, idx=None):
+    def __init__(self, name, category, diameter=0.0, area=0.0, weight=0.0, strength=0.0, r25=0.0,
+                 hcap=0.0, idx=None):
         self.name = name
         self.category = category
         self.diameter = diameter
@@ -38,8 +38,8 @@ class Conductor(object):
     __slots__ = ('_name', '_category', '_diameter', '_area', '_weight', '_strength', '_r25',
                  '_hcap', '_idx')
     
-    def __init__(self, name='', category=None, diameter=0.0, area=0.0, weight=0.0,
-                 strength=0.0, r25=0.0, hcap=0.0, idx=None):
+    def __init__(self, name, category, diameter=0.0, area=0.0, weight=0.0, strength=0.0, r25=0.0,
+                 hcap=0.0, idx=None):
         """
         name     : Name of conductor
         category : Category instance
