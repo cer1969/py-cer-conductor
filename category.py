@@ -11,7 +11,7 @@ class CategoryMaker(object):
     """
     __slots__ = ('name', 'modelas', 'coefexp', 'creep', 'alpha', 'idx')
     
-    def __init__(self, name='', modelas=0.0, coefexp=0.0, creep=0.0, alpha=0.0, idx=None):
+    def __init__(self, name, modelas=0.0, coefexp=0.0, creep=0.0, alpha=0.0, idx=None):
         self.name = name
         self.modelas = modelas
         self.coefexp = coefexp
@@ -32,7 +32,7 @@ class Category(object):
     
     __slots__ = ('_name', '_modelas', '_coefexp', '_creep', '_alpha', '_idx')
     
-    def __init__(self, name='', modelas=0.0, coefexp=0.0, creep=0.0, alpha=0.0, idx=None):
+    def __init__(self, name, modelas=0.0, coefexp=0.0, creep=0.0, alpha=0.0, idx=None):
         """
         name    : Name of conductor category
         modelas : Modulus of elasticity [kg/mm2]
