@@ -1,6 +1,6 @@
 {
     "version": "0.1.0",
-    "command": "C:/Users/crecheverria/Devel/z_venvs/py64-3.5.2-gen/Scripts/python.exe",
+    "command": "C:/Users/crecheverria/Apps/WinPython/3.5.2.3Zero/python-3.5.2.amd64/python.exe",
     "isShellCommand": true,
     "args": ["-u", "${file}"],
     "showOutput": "always",
