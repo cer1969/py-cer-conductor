@@ -1,7 +1,4 @@
 {
-    "python.pythonPath": "C:/Users/crecheverria/Devel/z_venvs/py64-3.5.2-gen/Scripts/python.exe",
-    "python.linting.pylintEnabled": false,
-    "linux": {
-        "python.pythonPath": "/home/cheve/Devel/z_venvs/py3.5gen/bin/python"
-    }
+    "python.pythonPath": "C:/Users/crecheverria/Apps/WinPython/3.5.2.3Zero/python-3.5.2.amd64/python.exe",
+    "python.linting.pylintEnabled": false
 }
