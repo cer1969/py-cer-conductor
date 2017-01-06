@@ -15,24 +15,26 @@ goto :end
 
 :build
 echo Building %module%.pyd
+python setup.py build_ext -b ../.. -t ./ztmp
+goto :end
+
+:html
 cython -a -o ztmp\%module%.c %module%.pyx
-gcc -c -DMS_WIN64 -Ofast -I%PYTHON_ROOT%\include -o ztmp\%module%.o ztmp\%module%.c
-gcc -shared -L%PYTHON_ROOT%\libs -o %module%.pyd ztmp\%module%.o -lpython35
 goto :end
 
 :clean
-echo Cleaning tmp
-del ztmp\%module%.c
-del ztmp\%module%.o
-del ztmp\%module%.html
+echo Cleaning
+rmdir /s /q ztmp\Release
+del /q ztmp\*.*
+del %module%.c
 goto :end
 
 :clean_all
 echo Cleaning all
-del %module%.pyd
-del ztmp\%module%.c
-del ztmp\%module%.o
-del ztmp\%module%.html
+rmdir /s /q ztmp\Release
+del /q ztmp\*.*
+del %module%.c
+del %module%*.pyd
 goto :end
 
 :end
