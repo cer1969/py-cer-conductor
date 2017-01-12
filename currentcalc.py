@@ -1,6 +1,5 @@
 # CRISTIAN ECHEVERRÍA RABÍ
 
-from cer.value.checker import Check
 from .constants import (CF_CLASSIC, CF_IEEE, TA_MIN, TA_MAX, TC_MIN, TC_MAX, ITER_MAX)
 
 #-----------------------------------------------------------------------------------------
@@ -33,9 +32,10 @@ class CurrentCalc(object):
         conductor : Conductor instance. 
         Valid values are required for r25, diameter and category.alpha
         """
-        Check(conductor._r25).gt(0)
-        Check(conductor._diameter).gt(0)
-        Check(conductor._category._alpha).gt(0).lt(1)
+        if conductor._diameter <= 0: raise ValueError("diameter <= 0")
+        if conductor._r25 <= 0: raise ValueError("r25 <= 0")
+        if conductor._category._alpha <= 0: raise ValueError("category.alpha <= 0")
+        if conductor._category._alpha >= 1: raise ValueError("category.alpha >= 1")
         
         self._conductor = conductor
         
@@ -53,7 +53,8 @@ class CurrentCalc(object):
         """Returns resistance [Ohm/km]
         tc : Conductor temperature [°C]
         """
-        Check(tc).ge(TC_MIN).le(TC_MAX)
+        if tc < TC_MIN: raise ValueError("tc < TC_MIN")
+        if tc > TC_MAX: raise ValueError("tc > TC_MAX")
         return self._conductor._r25*(1 + self._conductor._category._alpha*(tc - 25))
 
     def getCurrent(self, ta, tc):
@@ -61,8 +62,10 @@ class CurrentCalc(object):
         ta : Ambient temperature [°C]
         tc : Conductor temperature [°C]
         """
-        Check(ta).ge(TA_MIN).le(TA_MAX)
-        Check(tc).ge(TC_MIN).le(TC_MAX)
+        if ta < TA_MIN: raise ValueError("ta < TA_MIN")
+        if ta > TA_MAX: raise ValueError("ta > TA_MAX")
+        if tc < TC_MIN: raise ValueError("tc < TC_MIN")
+        if tc > TC_MAX: raise ValueError("tc > TC_MAX")
         
         if ta >= tc:
             return 0.0
@@ -104,10 +107,10 @@ class CurrentCalc(object):
         ta : Ambient temperature [°C]
         ic : Current [ampere]
         """
-        Check(ta).ge(TA_MIN).le(TA_MAX)
-        _Imin = 0
-        _Imax = self.getCurrent(ta, TC_MAX)
-        Check(ic).ge(_Imin).le(_Imax) # Ensure ta <= Tc <= TC_MAX
+        if ta < TA_MIN: raise ValueError("ta < TA_MIN")
+        if ta > TA_MAX: raise ValueError("ta > TA_MAX")
+        if ic < 0: raise ValueError("ic < 0")
+        if ic > self.getCurrent(ta, TC_MAX): raise ValueError("ic > Imax (TC_MAX)")
         
         Tmin = ta
         Tmax = TC_MAX
@@ -130,11 +133,10 @@ class CurrentCalc(object):
         tc : Conductor temperature [°C]
         ic : Current [ampere]
         """
-        Check(tc).ge(TC_MIN).le(TC_MAX)
-        
-        _Imin = self.getCurrent(TA_MAX, tc)
-        _Imax = self.getCurrent(TA_MIN, tc)
-        Check(ic).ge(_Imin).le(_Imax) # Ensure TA_MIN =< Ta =< TA_MAX
+        if tc < TC_MIN: raise ValueError("tc < TC_MIN")
+        if tc > TC_MAX: raise ValueError("tc > TC_MAX")
+        if ic < self.getCurrent(TA_MAX, tc): raise ValueError("ic < Imin (TA_MAX)")
+        if ic > self.getCurrent(TA_MIN, tc): raise ValueError("ic > Imax (TA_MIN)")
         
         Tmin = TA_MIN
         Tmax = min([TA_MAX, tc])
@@ -167,51 +169,53 @@ class CurrentCalc(object):
         return self._altitude
     
     @altitude.setter
-    def altitude(self, value):
-        Check(value).ge(0)
-        self._altitude = value
+    def altitude(self, v):
+        if v < 0: raise ValueError("altitude < 0")
+        self._altitude = v
     
     @property
     def airVelocity(self):
         return self._airVelocity
     
     @airVelocity.setter
-    def airVelocity(self, value):
-        Check(value).ge(0)
-        self._airVelocity = value
+    def airVelocity(self, v):
+        if v < 0: raise ValueError("airVelocity < 0")
+        self._airVelocity = v
     
     @property
     def sunEffect(self):
         return self._sunEffect
     
     @sunEffect.setter
-    def sunEffect(self, value):
-        Check(value).ge(0).le(1)
-        self._sunEffect = value
+    def sunEffect(self, v):
+        if v < 0: raise ValueError("sunEffect < 0")
+        if v > 1: raise ValueError("sunEffect > 1")
+        self._sunEffect = v
     
     @property
     def emissivity(self):
         return self._emissivity
     
     @emissivity.setter
-    def emissivity(self, value):
-        Check(value).ge(0).le(1)
-        self._emissivity = value
+    def emissivity(self, v):
+        if v < 0: raise ValueError("emissivity < 0")
+        if v > 1: raise ValueError("emissivity > 1")
+        self._emissivity = v
     
     @property
     def formula(self):
         return self._formula
     
     @formula.setter
-    def formula(self, value):
-        Check(value).isIn([CF_CLASSIC, CF_IEEE])
-        self._formula = value
+    def formula(self, v):
+        if v not in [CF_IEEE, CF_CLASSIC]: raise ValueError("formula <> CF_IEEE, CF_CLASSIC")
+        self._formula = v
     
     @property
     def deltaTemp(self):
         return self._deltaTemp
     
     @deltaTemp.setter
-    def deltaTemp(self, value):
-        Check(value).gt(0)
-        self._deltaTemp = value
+    def deltaTemp(self, v):
+        if v <= 0: raise ValueError("deltaTemp <= 0")
+        self._deltaTemp = v
