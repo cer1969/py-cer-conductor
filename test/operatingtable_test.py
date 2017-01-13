@@ -20,8 +20,6 @@ class TCTablaOperacion(unittest.TestCase):
         self.assertEqual(item.currentcalc.conductor, self.cab0)
         self.assertEqual(item.tempMaxOp, 50.0)
         self.assertEqual(item.nsc, 1)
-        self.assertEqual(item.currentcalc.altitude, 300.0)
-        self.assertEqual(item.currentcalc.emissivity, 0.5)
 
     def test_itemError(self):
         cc0 = cx.CurrentCalc(self.cab0)
@@ -32,11 +30,6 @@ class TCTablaOperacion(unittest.TestCase):
         # nsc
         self.assertRaises(ValueError, cx.OperatingItem, cc0, 50.0, 0)
         self.assertRaises(ValueError, cx.OperatingItem, cc1, 50.0, -1)
-        # altitude
-        self.assertRaises(ValueError, cx.OperatingItem, cc1, 50.0, 1, altitude=-0.1)
-        # emissivity
-        self.assertRaises(ValueError, cx.OperatingItem, cc1, 50.0, 1, emissivity=-0.1)
-        self.assertRaises(ValueError, cx.OperatingItem, cc1, 50.0, 1, emissivity= 1.1)
 
     def test_itemReadOnly(self):
         cc0 = cx.CurrentCalc(self.cab0)
@@ -48,7 +41,6 @@ class TCTablaOperacion(unittest.TestCase):
         self.assertRaises(AttributeError, setValue, "currentcalc", 3)
         self.assertRaises(AttributeError, setValue, "tempMaxOp", 3)
         self.assertRaises(AttributeError, setValue, "nsc", 3)
-
 
     def test_tableNoArguments(self):
         cc0 = cx.CurrentCalc(self.cab0)

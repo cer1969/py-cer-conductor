@@ -122,7 +122,7 @@ cdef class ConductorMaker:
         return self._get()
 
 #-----------------------------------------------------------------------------------------
-# CurrentCalc 
+# CurrentCalc
 
 cdef class CurrentCalc:
 
@@ -132,8 +132,6 @@ cdef class CurrentCalc:
     cdef int _formula
 
     def __cinit__(self, Conductor conductor):
-    #def __init__(self, double diameter, double r25, double alpha):
-        
         if conductor.diameter <= 0: raise ValueError("diameter <= 0")
         if conductor.r25 <= 0: raise ValueError("r25 <= 0")
         if conductor.category.alpha <= 0: raise ValueError("category.alpha <= 0")
@@ -328,3 +326,33 @@ cdef class CurrentCalc:
     def deltaTemp(self, double v):
         if v <= 0: raise ValueError("deltaTemp <= 0")
         self._deltaTemp = v
+
+#-----------------------------------------------------------------------------------------
+# OperatingItem
+
+cdef class OperatingItem:
+
+    cdef readonly CurrentCalc currentcalc
+    cdef readonly double tempMaxOp
+    cdef readonly int nsc
+
+    def __cinit__(self, CurrentCalc currentcalc, tempMaxOp=50.0, nsc=1):
+        if tempMaxOp < _TC_MIN: raise ValueError("tempMaxOp < TC_MIN")
+        if tempMaxOp > _TC_MAX: raise ValueError("tempMaxOp > TC_MAX")
+        if nsc < 1: raise ValueError("nsc < 1")
+
+        self.currentcalc = currentcalc
+        self.tempMaxOp = tempMaxOp
+        self.nsc = nsc
+    
+    #-------------------------------------------------------------------------------------
+    # Public methods
+
+    def getCurrent(self, double ta):
+        return self._getCurrent(ta)
+
+    #-------------------------------------------------------------------------------------
+    # Private methods
+
+    cdef double _getCurrent(self, double ta) except -1000:
+        return self.currentcalc._getCurrent(ta, self.tempMaxOp) * self.nsc
