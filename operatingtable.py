@@ -21,19 +21,15 @@ class OperatingItem(object):
     
     __slots__ = ('_currentcalc', '_tempMaxOp','_nsc')
 
-    def __init__(self, currentcalc, tempMaxOp=50.0, nsc=1, altitude=300.0,
-                 emissivity=0.5):
+    def __init__(self, currentcalc, tempMaxOp=50.0, nsc=1):
         """
         currentcalc : CurrentCalc instance
         tempMaxOp   : Maximum operating temperature for currentcalc.conductor [°C]
         nsc         : Number of subconductor per face
-        altitude    : Altitude [m] = 300.0
-        emissivity  : Emissivity (0 to 1) = 0.5
         """
-        currentcalc.altitude = altitude
-        currentcalc.emissivity = emissivity
-        Check(tempMaxOp).ge(TC_MIN).le(TC_MAX)
-        Check(nsc).ge(1)
+        if tempMaxOp < TC_MIN: raise ValueError("tempMaxOp < TC_MIN")
+        if tempMaxOp > TC_MAX: raise ValueError("tempMaxOp > TC_MAX")
+        if nsc < 1: raise ValueError("nsc < 1")
         
         self._currentcalc = currentcalc
         self._tempMaxOp = tempMaxOp
@@ -45,7 +41,7 @@ class OperatingItem(object):
         """Returns current for the OperatingItems [ampere]
         ta : Ambient temperature [°C]
         """
-        return self.currentcalc.getCurrent(ta, self.tempMaxOp) * self.nsc
+        return self._currentcalc.getCurrent(ta, self._tempMaxOp) * self._nsc
 
     #-------------------------------------------------------------------------------------
     

@@ -1,9 +1,6 @@
 # CRISTIAN ECHEVERRÍA RABÍ
 
 from ._zx import *
-#from .tctimecalc import *
-#from .tensioncalc import *
-#from .operatingtable import *
 
 #-----------------------------------------------------------------------------------------
 
