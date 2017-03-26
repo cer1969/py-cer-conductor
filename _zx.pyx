@@ -356,3 +356,34 @@ cdef class OperatingItem:
 
     cdef double _getCurrent(self, double ta) except -1000:
         return self.currentcalc._getCurrent(ta, self.tempMaxOp) * self.nsc
+
+#-----------------------------------------------------------------------------------------
+# OperatingTable
+
+cdef class OperatingTable:
+
+    cdef readonly list items
+    cdef readonly object idx
+
+    def __cinit__(self, idx=None):
+        self.items = []
+        self.idx = idx
+    
+    #-------------------------------------------------------------------------------------
+    # Public methods
+
+    def getCurrent(self, double ta):
+        return self._getCurrent(ta)
+    
+    #-------------------------------------------------------------------------------------
+    # Private methods
+
+    cdef double _getCurrent(self, double ta) except -1000:
+        cdef double minimo, amp
+        cdef OperatingItem item
+
+        minimo = 100000
+        for item in self.items:
+            amp = item._getCurrent(ta)
+            if amp < minimo: minimo = amp
+        return minimo

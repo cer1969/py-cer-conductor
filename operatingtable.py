@@ -1,6 +1,5 @@
 # CRISTIAN ECHEVERRÍA RABÍ
 
-from cer.value.checker import Check
 from .constants import (TC_MIN, TC_MAX)
 
 #-----------------------------------------------------------------------------------------
@@ -42,15 +41,6 @@ class OperatingItem(object):
         ta : Ambient temperature [°C]
         """
         return self._currentcalc.getCurrent(ta, self._tempMaxOp) * self._nsc
-
-    #-------------------------------------------------------------------------------------
-    
-    def getCurrentList(self, taList):
-        """Returns list with current [ampere]
-        taList: Secuence with ambient temperatures [°C]
-        """
-        sal = [self.getCurrent(ta) for ta in taList]
-        return sal
     
     #--------------------------------------------------------------------------
     # Properties
@@ -71,24 +61,22 @@ class OperatingItem(object):
 #-----------------------------------------------------------------------------------------
 
 class OperatingTable(list):
-    """Mutable secuence to store OperatingItem instances and calculates current.
+    """Object to store OperatingItem instances and calculates current.
     
     Read-only properties
     idx : Optional database key
+    items: List of OperatingItem instances
     
     """
 
-    __slots__ = ('idx',)
+    __slots__ = ('_idx', '_items')
 
-    def __init__(self, items=None, idx=None):
+    def __init__(self, idx=None):
         """
-        items : Secuence with OperatingItem instance
         idx   : Database key
         """
-        its = [] if items is None else items
-        
-        list.__init__(self, its)
-        self.idx = idx
+        self._items = []
+        self._idx = idx
     
     #-------------------------------------------------------------------------------------
 
@@ -97,63 +85,18 @@ class OperatingTable(list):
         ta : Ambient temperature [°C]
         """
         minimo = 100000
-        for item in self:
+        for item in self._items:
             amp = item.getCurrent(ta)
             if amp < minimo: minimo = amp
         return minimo
     
-    def getCurrentList(self, taList):
-        """Returns list with current [ampere]
-        taList: Secuence with ambient temperatures [°C]
-        """
-        sal = [self.getCurrent(ta) for ta in taList]
-        return sal
-
-    #-------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     # Properties
-    # TODO: Se deben eliminar estos métodos porque provocan confusión.
-    # TODO: Los currentcalc individuales podrían tener distintos valores
     
-#     @property
-#     def airVelocity(self):
-#         return self[0].currentcalc.airVelocity
-# 
-#     #@deco.ge(0)
-#     @airVelocity.setter
-#     def airVelocity(self, value):
-#         for i in self:
-#             i.currentcalc.airVelocity = value 
-#     
-#     def _getSunEffect(self):
-#         return self[0].currentcalc.sunEffect
-#     
-#     @deco.ge(0)
-#     @deco.le(1)
-#     def _setSunEffect(self, value):
-#         for i in self:
-#             i.currentcalc.sunEffect = value
-#     
-#     def _getEmissivity(self):
-#         return self[0].currentcalc.emissivity
-# 
-#     @deco.ge(0)
-#     @deco.le(1)
-#     def _setEmissivity(self, value):
-#         for i in self:
-#             i.currentcalc.emissivity = value
-#     
-#     def _getFormula(self):
-#         return self[0].currentcalc.formula
-#     
-#     @deco.isIn([CF_CLASSIC, CF_IEEE])
-#     def _setFormula(self, value):
-#         for i in self:
-#             i.currentcalc.formula = value
-# 
-#     #-------------------------------------------------------------------------------------
-#     # Properties
-#     
-#     #airVelocity = property(_getAirVelocity, _setAirVelocity)
-#     sunEffect   = property(_getSunEffect,   _setSunEffect)
-#     emissivity  = property(_getEmissivity,  _setEmissivity)
-#     formula     = property(_getFormula,     _setFormula)
+    @property
+    def idx(self):
+        return self._idx
+    
+    @property
+    def items(self):
+        return self._items
