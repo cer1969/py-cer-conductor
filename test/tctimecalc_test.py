@@ -8,17 +8,17 @@ import unittest
 class TCConstructor(unittest.TestCase):
 
     def setUp(self):
-        self.cab = cx.Conductor(category=cx.CC_AAAC, name="AAAC 740,8 MCM FLINT",
-                                diameter=25.17, r25=0.089360, hcap=0.052744)
+        self.condmk = cx.ConductorMaker("AAAC 740,8 MCM FLINT", cx.CC_AAAC, diameter=25.17, r25=0.089360, hcap=0.052744)
+        self.cond = cx.Conductor("AAAC 740,8 MCM FLINT", cx.CC_AAAC, diameter=25.17, r25=0.089360, hcap=0.052744)
     
     def test_defaultValues(self):
         # Verifica que se asignen valores por defecto
-        cc = cx.CurrentCalc(self.cab)
+        cc = cx.CurrentCalc(self.cond)
         Imax = cc.getCurrent(25.0, cx.TC_MAX)
         scc = cx.TcTimeCalc(cc, 25.0)
         
         self.assertEqual(scc.currentcalc, cc)
-        self.assertEqual(scc.currentcalc.conductor, self.cab)
+        self.assertEqual(scc.currentcalc.conductor, self.cond)
         self.assertEqual(scc.ta, 25.0)
         self.assertEqual(scc.timeStep, 1.0)
         self.assertEqual(scc.deltaIc, 0.01)
@@ -28,12 +28,13 @@ class TCConstructor(unittest.TestCase):
     # Verifica errores en parámetros de conductor
     
     def test_errorParameters(self):
-        cc = cx.CurrentCalc(self.cab)
+        cc = cx.CurrentCalc(self.condmk.get())
         
         self.assertRaises(ValueError, cx.TcTimeCalc, cc, cx.TA_MIN - 1)
         self.assertRaises(ValueError, cx.TcTimeCalc, cc, cx.TA_MAX + 1)
         
-        cc.conductor.hcap = 0.0        
+        self.condmk.hcap = 0.0
+        cc = cx.CurrentCalc(self.condmk.get())
         self.assertRaises(ValueError, cx.TcTimeCalc, cc, 25.0)
 
     
@@ -87,7 +88,6 @@ class TCMethods(unittest.TestCase):
         self.scc.timeStep = 7
 
     def test_getData(self):
-        #def getTcTime(self, tcx, icfin, lapse, timex=0):
         # tcx
         self.assertRaises(ValueError, self.scc.getData, cx.TC_MIN-1, 500, 15*60)
         self.assertRaises(ValueError, self.scc.getData, cx.TC_MAX+1, 500, 15*60)

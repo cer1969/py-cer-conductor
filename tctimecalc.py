@@ -2,7 +2,6 @@
 
 import math
 
-from cer.value.checker import Check
 from .constants import (TA_MIN, TA_MAX, TC_MAX, ITER_MAX)
 
 #-----------------------------------------------------------------------------------------
@@ -33,7 +32,7 @@ class TcTimeCalc(object):
         ta          : Ambient temperature [°C]
         Valid values are required for currentcalc.conductor.hcap and Ta
         """
-        Check(currentcalc.conductor.hcap).gt(0)
+        if currentcalc.conductor.hcap <= 0: raise ValueError("hcap <= 0")
         
         self._currentcalc = currentcalc
         self.ta = ta
@@ -65,8 +64,9 @@ class TcTimeCalc(object):
         Is not necessary to start the sequence with the balance temperature prior
         to the change in current.
         """
-        Check(icfin).ge(0).le(self._icmax)
-        Check(lapse).gt(0)
+        if icfin < 0: raise ValueError("icfin < 0")
+        if icfin > self._icmax: raise ValueError("icfin > icmax (ta)")
+        if lapse <= 0: raise ValueError("lapse <= 0")
         
         npasos = int(math.ceil(lapse/self._timeStep)) + 1
         times = [(timex + x*self._timeStep) for x in range(npasos)]
@@ -88,9 +88,10 @@ class TcTimeCalc(object):
         factor  : Ifin/Iini
         lapse   : Time interval to rich tcx [seconds]
         """
-        Check(tcx).gt(self._ta).le(TC_MAX)
-        Check(factor).gt(0)
-        Check(lapse).gt(0)
+        if tcx <= self._ta: raise ValueError("tcx <= ta")
+        if tcx > TC_MAX: raise ValueError("tcx > TC_MAX")
+        if factor <= 0: raise ValueError("factor <= 0")
+        if lapse <= 0: raise ValueError("lapse <= 0")
         
         ibmin = 0
         ibmax = self._icmax/factor
@@ -119,9 +120,11 @@ class TcTimeCalc(object):
         lapse  : Time interval to rich Tcx [seconds]
         tcxini : Optional. If None it will be calculated using Iini.
         """
-        Check(tcx).gt(self._ta).le(TC_MAX)
-        Check(icini).gt(0).le(self._icmax)
-        Check(lapse).gt(0)
+        if tcx <= self._ta: raise ValueError("tcx <= ta")
+        if tcx > TC_MAX: raise ValueError("tcx > TC_MAX")
+        if icini <= 0: raise ValueError("icini <= 0")
+        if icini > self._icmax: raise ValueError("icini > icmax (ta)")
+        if lapse <= 0: raise ValueError("lapse <= 0")
         
         Tini = self.getTc(icini)
         if tcxini is None:
@@ -129,11 +132,13 @@ class TcTimeCalc(object):
         
         # Test if it growing or not
         if tcx > Tini:
-            Check(tcxini).ge(Tini).lt(tcx)
+            if tcxini < Tini: raise ValueError("tcxini < Tini growing")
+            if tcxini >= tcx: raise ValueError("tcxini >= tcx growing")
             ibmin = icini
             ibmax = self._icmax
         else:
-            Check(tcxini).le(Tini).gt(tcx)
+            if tcxini > Tini: raise ValueError("tcxini > Tini not growing")
+            if tcxini <= tcx: raise ValueError("tcxini <= tcx not growing")
             ibmin = 0.0
             ibmax = icini
         
@@ -171,8 +176,9 @@ class TcTimeCalc(object):
     
     @ta.setter
     def ta(self, value):
-        Check(value).ge(TA_MIN).le(TA_MAX)
-        self._ta = value        
+        if value < TA_MIN: raise ValueError("value < TA_MIN")
+        if value > TA_MAX: raise ValueError("valueta > TA_MAX")
+        self._ta = value
         self._icmax = self.getCurrent(TC_MAX)
     
     @property
@@ -181,7 +187,8 @@ class TcTimeCalc(object):
     
     @timeStep.setter
     def timeStep(self, value):
-        Check(value).gt(0).le(60)
+        if value <= 0: raise ValueError("value <= 0")
+        if value > 60: raise ValueError("value > 60")
         self._timeStep = value
     
     @property
@@ -190,7 +197,7 @@ class TcTimeCalc(object):
     
     @deltaIc.setter
     def deltaIc(self, value):
-        Check(value).gt(0)
+        if value <= 0: raise ValueError("value <= 0")
         self._deltaIc = value
 
 
@@ -213,7 +220,7 @@ class TcTimeData(tuple):
         data : Secuence with tuples (time, Tc)
         len(data) must be greater than 1
         """
-        Check(len(data)).gt(1)
+        if len(data) <= 1: raise ValueError("len(data) <= 1")
         
         t = tuple.__new__(cls, data)
         
