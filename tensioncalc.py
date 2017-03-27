@@ -2,8 +2,7 @@
 
 import math
 
-from cer.value import check, deco
-from .constants import (ITER_MAX, TENSION_MAX)
+from .constants import TENSION_MAX #(ITER_MAX, TENSION_MAX)
 
 #-----------------------------------------------------------------------------------------
 
@@ -66,13 +65,13 @@ class TensionCalc(object):
         Valid values are required for diameter, area, weight, strength and
         category (modelas, coefexp, creep)
         """
-        check.gt(conductor.diameter, 0)
-        check.gt(conductor.area, 0)
-        check.gt(conductor.weight, 0)
-        check.gt(conductor.strength, 0)
-        check.gt(conductor.category.modelas, 0)
-        check.gt(conductor.category.coefexp, 0)
-        check.ge(conductor.category.creep, 0)
+        if conductor._diameter <= 0: raise ValueError("conductor.diameter <= 0")
+        if conductor._area <= 0: raise ValueError("conductor.area <= 0")
+        if conductor._weight <= 0: raise ValueError("conductor.weight <= 0")
+        if conductor._strength <= 0: raise ValueError("conductor.strength <= 0")
+        if conductor._category._modelas <= 0: raise ValueError("conductor.category.modelas <= 0")
+        if conductor._category._coefexp <= 0: raise ValueError("conductor.category.coefexp <= 0")
+        if conductor._category._creep < 0: raise ValueError("conductor.category.creep < 0")
         
         self._conductor = conductor
         
@@ -85,7 +84,7 @@ class TensionCalc(object):
         self._creepFactorCal = 1.0
         self._iceThickCal = 0.0
         self._windPressureCal = 0.0
-        self._deltaTension = 0.001
+        self._deltaTension = 0.01
 
     #-------------------------------------------------------------------------------------
     # Public methods
@@ -96,22 +95,22 @@ class TensionCalc(object):
         tc : Conductor temperature [°C]
              Without current is equal to ambiente temperature. 
         """
-        check.gt(rs, 0)
+        if rs <= 0: raise ValueError("rs <= 0")
         
         P1 = self.transLoadRef
         P2 = self.transLoadCal
         T1 = self.tensionRef
         t1 = self._tempRef
-        S = self._conductor.area
-        M = self._conductor.category.modelas
-        cfd = self._conductor.category.coefexp
+        S = self._conductor._area
+        M = self._conductor._category._modelas
+        cfd = self._conductor._category._coefexp
 
         # calculate creep to apply
-        creep = (self._creepFactorCal - self._creepFactorRef)*self._conductor.category.creep
+        creep = (self._creepFactorCal - self._creepFactorRef)*self._conductor._category._creep
         
         Tmin = 0
         Tmax = TENSION_MAX
-        cuenta = 0
+        #cuenta = 0
         while (Tmax - Tmin) > self._deltaTension:
             Tmed = 0.5*(Tmin + Tmax)
             valor = _annulsEquation(rs, P1, P2, T1, Tmed, t1, tc + creep, S, M, cfd)
@@ -119,10 +118,10 @@ class TensionCalc(object):
                 Tmax = Tmed
             else:
                 Tmin = Tmed
-            cuenta = cuenta + 1
-            if cuenta > ITER_MAX:
-                err_msg = "getTension: Nº iterations > %d" % ITER_MAX
-                raise RuntimeError(err_msg)
+            #cuenta = cuenta + 1
+            #if cuenta > ITER_MAX:
+            #    err_msg = "getTension: Nº iterations > %d" % ITER_MAX
+            #    raise RuntimeError(err_msg)
         return Tmed
     
 #=========================================================================================
@@ -165,8 +164,8 @@ class TensionCalc(object):
         Water weights 1 kg per litre ( 1 m3 weights 1000 kg)
         it : Ice thickness [mm]
         """
-        D = self._conductor.diameter
-        P = self._conductor.weight
+        D = self._conductor._diameter
+        P = self._conductor._weight
         return (it**2 + it*D) * math.pi * 0.001 + P
     
     def getWindLoad(self, it, wp):
@@ -174,7 +173,7 @@ class TensionCalc(object):
         it : Ice thickness [mm]
         wp : wind pressure [kg/m2]
         """ 
-        D = self._conductor.diameter
+        D = self._conductor._diameter
         return (2*it + D)*wp*0.001
     
     def getTransLoad(self, it, wp):
@@ -223,8 +222,8 @@ class TensionCalc(object):
     
     @tensionFactorRef.setter
     def tensionFactorRef(self, value):
-        check.ge(value, 0)
-        check.le(value, 1)
+        if value < 0: raise ValueError("value < 0")
+        if value > 1: raise ValueError("value > 1")
         self._tensionFactorRef = value
     
     @property
@@ -233,7 +232,7 @@ class TensionCalc(object):
     
     @tensionRef.setter
     def tensionRef(self, value):
-        check.ge(value, 0)
+        if value < 0: raise ValueError("value < 0")
         self._tensionFactorRef = value/self._conductor.strength
     
     @property
@@ -250,8 +249,8 @@ class TensionCalc(object):
     
     @creepFactorRef.setter
     def creepFactorRef(self, value):
-        check.ge(value, 0)
-        check.le(value, 1)
+        if value < 0: raise ValueError("value < 0")
+        if value > 1: raise ValueError("value > 1")
         self._creepFactorRef = value
     
     @property
@@ -260,7 +259,7 @@ class TensionCalc(object):
     
     @iceThickRef.setter
     def iceThickRef(self, value):
-        check.ge(value, 0)
+        if value < 0: raise ValueError("value < 0")
         self._iceThickRef = value
     
     @property
@@ -269,7 +268,7 @@ class TensionCalc(object):
     
     @windPressureRef.setter
     def windPressureRef(self, value):
-        check.ge(value, 0)
+        if value < 0: raise ValueError("value < 0")
         self._windPressureRef = value
     
     @property
@@ -278,8 +277,8 @@ class TensionCalc(object):
     
     @creepFactorCal.setter
     def creepFactorCal(self, value):
-        check.ge(value, 0)
-        check.le(value, 1)
+        if value < 0: raise ValueError("value < 0")
+        if value > 1: raise ValueError("value > 1")
         self._creepFactorCal = value
     
     @property
@@ -288,7 +287,7 @@ class TensionCalc(object):
     
     @iceThickCal.setter
     def iceThickCal(self, value):
-        check.ge(value, 0)
+        if value < 0: raise ValueError("value < 0")
         self._iceThickCal = value
     
     @property
@@ -297,7 +296,7 @@ class TensionCalc(object):
     
     @windPressureCal.setter
     def windPressureCal(self, value):
-        check.ge(value, 0)
+        if value < 0: raise ValueError("value < 0")
         self._windPressureCal = value
 
     @property
@@ -306,5 +305,5 @@ class TensionCalc(object):
     
     @deltaTension.setter
     def deltaTension(self, value):
-        check.gt(value, 0)
+        if value <= 0: raise ValueError("value <= 0")
         self._deltaTension = value

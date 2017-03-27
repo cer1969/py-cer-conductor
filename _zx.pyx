@@ -12,7 +12,7 @@ cdef double _TA_MAX =  90.0
 cdef double _TC_MIN =  -90.0
 cdef double _TC_MAX = 2000.0
 cdef double _TENSION_MAX = 50000
-cdef double _ITER_MAX = 20000
+#cdef double _ITER_MAX = 20000
 
 CF_IEEE = _CF_IEEE
 CF_CLASSIC = _CF_CLASSIC
@@ -21,7 +21,7 @@ TA_MAX = _TA_MAX
 TC_MIN = _TC_MIN
 TC_MAX = _TC_MAX
 TENSION_MAX = _TENSION_MAX
-ITER_MAX = _ITER_MAX
+#ITER_MAX = _ITER_MAX
 
 #-----------------------------------------------------------------------------------------
 # Category 
@@ -222,11 +222,11 @@ cdef class CurrentCalc:
         if ic > self._getCurrent(ta, _TC_MAX): raise ValueError("ic > Imax (TC_MAX)")
 
         cdef double Tmin, Tmax, Tmed, Imed
-        cdef int cuenta
+        #cdef int cuenta
         
         Tmin = ta
         Tmax = _TC_MAX
-        cuenta = 0
+        #cuenta = 0
         while (Tmax - Tmin) > self._deltaTemp:
             Tmed = 0.5*(Tmin + Tmax)
             Imed = self._getCurrent(ta, Tmed)
@@ -234,7 +234,7 @@ cdef class CurrentCalc:
                 Tmax = Tmed
             else:
                 Tmin = Tmed
-            cuenta = cuenta + 1
+            #cuenta = cuenta + 1
             #if cuenta > ITER_MAX:
             #    err_msg = "getTc(): N° iterations > %d" % ITER_MAX
             #    raise RuntimeError(err_msg)
@@ -247,14 +247,14 @@ cdef class CurrentCalc:
         if ic > self._getCurrent(_TA_MIN, tc): raise ValueError("ic > Imax (TA_MIN)")
         
         cdef double Tmin, Tmax, Tmed, Imed
-        cdef int cuenta
+        #cdef int cuenta
         
         Tmin = _TA_MIN
         Tmax = min([_TA_MAX, tc])
         if Tmin >= Tmax:
             return tc
         
-        cuenta = 0
+        #cuenta = 0
         while (Tmax - Tmin) > self._deltaTemp:
             Tmed = 0.5*(Tmin + Tmax)
             Imed = self._getCurrent(Tmed, tc)
@@ -262,7 +262,7 @@ cdef class CurrentCalc:
                 Tmin = Tmed
             else: 
                 Tmax = Tmed
-            cuenta = cuenta+1
+            #cuenta = cuenta+1
             #if cuenta > ITER_MAX:
             #    err_msg = "getTa(): N° iterations > %d" % ITER_MAX
             #    raise RuntimeError(err_msg)
