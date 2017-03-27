@@ -177,7 +177,7 @@ class TcTimeCalc(object):
     @ta.setter
     def ta(self, value):
         if value < TA_MIN: raise ValueError("value < TA_MIN")
-        if value > TA_MAX: raise ValueError("valueta > TA_MAX")
+        if value > TA_MAX: raise ValueError("value > TA_MAX")
         self._ta = value
         self._icmax = self.getCurrent(TC_MAX)
     
