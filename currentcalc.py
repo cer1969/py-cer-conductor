@@ -1,6 +1,6 @@
 # CRISTIAN ECHEVERRÍA RABÍ
 
-from .constants import (CF_CLASSIC, CF_IEEE, TA_MIN, TA_MAX, TC_MIN, TC_MAX, ITER_MAX)
+from .constants import (CF_CLASSIC, CF_IEEE, TA_MIN, TA_MAX, TC_MIN, TC_MAX) #, ITER_MAX)
 
 #-----------------------------------------------------------------------------------------
 
@@ -114,7 +114,7 @@ class CurrentCalc(object):
         
         Tmin = ta
         Tmax = TC_MAX
-        cuenta = 0
+        #cuenta = 0
         while (Tmax - Tmin) > self._deltaTemp:
             Tmed = 0.5*(Tmin + Tmax)
             Imed = self.getCurrent(ta, Tmed)
@@ -122,10 +122,10 @@ class CurrentCalc(object):
                 Tmax = Tmed
             else:
                 Tmin = Tmed
-            cuenta = cuenta + 1
-            if cuenta > ITER_MAX:
-                err_msg = "getTc(): N° iterations > %d" % ITER_MAX
-                raise RuntimeError(err_msg)
+            #cuenta = cuenta + 1
+            #if cuenta > ITER_MAX:
+            #    err_msg = "getTc(): N° iterations > %d" % ITER_MAX
+            #    raise RuntimeError(err_msg)
         return Tmed
     
     def getTa(self, tc, ic):
@@ -143,7 +143,7 @@ class CurrentCalc(object):
         if Tmin >= Tmax:
             return tc
         
-        cuenta = 0
+        #cuenta = 0
         while (Tmax - Tmin) > self._deltaTemp:
             Tmed = 0.5*(Tmin + Tmax)
             Imed = self.getCurrent(Tmed, tc)
@@ -151,10 +151,10 @@ class CurrentCalc(object):
                 Tmin = Tmed
             else: 
                 Tmax = Tmed
-            cuenta = cuenta+1
-            if cuenta > ITER_MAX:
-                err_msg = "getTa(): N° iterations > %d" % ITER_MAX
-                raise RuntimeError(err_msg)
+            #cuenta = cuenta+1
+            #if cuenta > ITER_MAX:
+            #    err_msg = "getTa(): N° iterations > %d" % ITER_MAX
+            #    raise RuntimeError(err_msg)
         return Tmed
     
     #-------------------------------------------------------------------------------------

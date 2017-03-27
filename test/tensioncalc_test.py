@@ -8,19 +8,18 @@ import unittest
 class TCConstructor(unittest.TestCase):
 
     def setUp(self):
-        self.tcab = cx.Category(name='AAAC (AASC)', modelas=6450.000000,
-                                coefexp=0.000023, creep=20.0)
-        self.cab = cx.Conductor(category=self.tcab, name="AAAC 740,8 MCM FLINT",
-                                diameter=25.17, area=375.4,
-                                weight=1.035, strength=11625.0)
+        self.catemk = cx.CategoryMaker('AAAC (AASC)', 6450.0, 0.000023, 20.0)
+        self.cate = cx.Category('AAAC (AASC)', 6450.0, 0.000023, 20.0)
+        self.condmk = cx.ConductorMaker("AAAC 740,8 MCM FLINT", self.cate, 25.17, 375.4, 1.035, 11625.0)
+        self.cond = cx.Conductor("AAAC 740,8 MCM FLINT", self.cate, 25.17, 375.4, 1.035, 11625.0)
     
     def test_defaultValues(self):
         # Verifica que se asignen valores por defecto al crear TempleCalc
-        tc = cx.TensionCalc(self.cab)
+        tc = cx.TensionCalc(self.cond)
         
-        self.assertEqual(tc.conductor, self.cab)
+        self.assertEqual(tc.conductor, self.cond)
         self.assertEqual(tc.tensionFactorRef, 0.2)
-        self.assertEqual(tc.tensionRef, tc.tensionFactorRef*self.cab.strength)
+        self.assertEqual(tc.tensionRef, tc.tensionFactorRef*self.cond.strength)
         self.assertEqual(tc.tempRef, 15.0)
         self.assertEqual(tc.creepFactorRef, 1.0)
         self.assertEqual(tc.iceThickRef, 0.0)
@@ -29,52 +28,57 @@ class TCConstructor(unittest.TestCase):
         self.assertEqual(tc.creepFactorCal, 1.0)
         self.assertEqual(tc.iceThickCal, 0.0)
         self.assertEqual(tc.windPressureCal, 0.0)
-        self.assertEqual(tc.deltaTension, 0.001)
+        self.assertEqual(tc.deltaTension, 0.01)
     
     #--------------------------------------------------------------------------
     # Verifica errores en parámetros de conductor y category conductor al crear TempleCalc
     
     def test_errordiameter(self):
-        self.cab.diameter = 0.0
-        self.assertRaises(ValueError, cx.TensionCalc, self.cab)
-        self.cab.diameter = -0.1
-        self.assertRaises(ValueError, cx.TensionCalc, self.cab)
+        self.condmk.diameter = 0.0
+        self.assertRaises(ValueError, cx.TensionCalc, self.condmk.get())
+        self.condmk.diameter = -0.1
+        self.assertRaises(ValueError, cx.TensionCalc, self.condmk.get())
     
     def test_errorArea(self):
-        self.cab.area = 0.0
-        self.assertRaises(ValueError, cx.TensionCalc, self.cab)
-        self.cab.area = -0.1
-        self.assertRaises(ValueError, cx.TensionCalc, self.cab)
+        self.condmk.area = 0.0
+        self.assertRaises(ValueError, cx.TensionCalc, self.condmk.get())
+        self.condmk.area = -0.1
+        self.assertRaises(ValueError, cx.TensionCalc, self.condmk.get())
 
     def test_errorWeight(self):
-        self.cab.weight = 0.0
-        self.assertRaises(ValueError, cx.TensionCalc, self.cab)
-        self.cab.weight = -0.1
-        self.assertRaises(ValueError, cx.TensionCalc, self.cab)
+        self.condmk.weight = 0.0
+        self.assertRaises(ValueError, cx.TensionCalc, self.condmk.get())
+        self.condmk.weight = -0.1
+        self.assertRaises(ValueError, cx.TensionCalc, self.condmk.get())
 
     def test_errorStrength(self):
-        self.cab.strength = 0.0
-        self.assertRaises(ValueError, cx.TensionCalc, self.cab)
-        self.cab.strength = -0.1
-        self.assertRaises(ValueError, cx.TensionCalc, self.cab)
+        self.condmk.strength = 0.0
+        self.assertRaises(ValueError, cx.TensionCalc, self.condmk.get())
+        self.condmk.strength = -0.1
+        self.assertRaises(ValueError, cx.TensionCalc, self.condmk.get())
     
     def test_errorModelas(self):
-        self.tcab.modelas = 0.0
-        self.assertRaises(ValueError, cx.TensionCalc, self.cab)
-        self.tcab.modelas = -0.1
-        self.assertRaises(ValueError, cx.TensionCalc, self.cab)
+        self.catemk.modelas = 0.0
+        cond = cx.Conductor("AAAC 740,8 MCM FLINT", self.catemk.get(), 25.17, 375.4, 1.035, 11625.0)
+        self.assertRaises(ValueError, cx.TensionCalc, cond)
+        self.catemk.modelas = -0.1
+        cond = cx.Conductor("AAAC 740,8 MCM FLINT", self.catemk.get(), 25.17, 375.4, 1.035, 11625.0)
+        self.assertRaises(ValueError, cx.TensionCalc, cond)
 
     def test_errorCoefexp(self):
-        self.tcab.coefexp = 0.0
-        self.assertRaises(ValueError, cx.TensionCalc, self.cab)
-        self.tcab.coefexp = -0.1
-        self.assertRaises(ValueError, cx.TensionCalc, self.cab)
+        self.catemk.coefexp = 0.0
+        cond = cx.Conductor("AAAC 740,8 MCM FLINT", self.catemk.get(), 25.17, 375.4, 1.035, 11625.0)
+        self.assertRaises(ValueError, cx.TensionCalc, cond)
+        self.catemk.coefexp = -0.1
+        cond = cx.Conductor("AAAC 740,8 MCM FLINT", self.catemk.get(), 25.17, 375.4, 1.035, 11625.0)
+        self.assertRaises(ValueError, cx.TensionCalc, cond)
 
-    def test_rrrorCreep(self):
-        self.tcab.creep = -0.1
-        self.assertRaises(ValueError, cx.TensionCalc, self.cab)
+    def test_errorCreep(self):
+        self.catemk.creep = -0.1
+        cond = cx.Conductor("AAAC 740,8 MCM FLINT", self.catemk.get(), 25.17, 375.4, 1.035, 11625.0)
+        self.assertRaises(ValueError, cx.TensionCalc, cond)
 
-        
+
 #-----------------------------------------------------------------------------------------
 
 class TCProperties(unittest.TestCase):
@@ -113,16 +117,16 @@ class TCProperties(unittest.TestCase):
         
     def testErrors(self):
         # Verifica que lanza error con valores fuera de rango
-        self.assertRaises(ValueError, self.SetValue, "tensionFactorRef", 1.1)
         self.assertRaises(ValueError, self.SetValue, "tensionFactorRef", -0.1)
+        self.assertRaises(ValueError, self.SetValue, "tensionFactorRef", 1.1)
         self.assertRaises(ValueError, self.SetValue, "tensionRef", -0.1)
-        self.assertRaises(ValueError, self.SetValue, "creepFactorRef", 1.1)
         self.assertRaises(ValueError, self.SetValue, "creepFactorRef", -0.1)
+        self.assertRaises(ValueError, self.SetValue, "creepFactorRef", 1.1)
         self.assertRaises(ValueError, self.SetValue, "iceThickRef", -0.1)
         self.assertRaises(ValueError, self.SetValue, "windPressureRef", -0.1)
         
-        self.assertRaises(ValueError, self.SetValue, "creepFactorCal", 1.1)
         self.assertRaises(ValueError, self.SetValue, "creepFactorCal", -0.1)
+        self.assertRaises(ValueError, self.SetValue, "creepFactorCal", 1.1)
         self.assertRaises(ValueError, self.SetValue, "iceThickCal", -0.1)
         self.assertRaises(ValueError, self.SetValue, "windPressureCal", -0.1)
         self.assertRaises(ValueError, self.SetValue, "deltaTension", -0.1)
@@ -145,7 +149,7 @@ class TCMethods(unittest.TestCase):
                            diameter=25.17, area=375.4, weight=1.035, strength=11625.0)
         self.tc = cx.TensionCalc(cab)
 
-    def testTemple(self):
+    def test_getTension(self):
         # Errores de argumentos
         self.assertRaises(ValueError, self.tc.getTension, -0.1, 30.0)
         
