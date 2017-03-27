@@ -81,8 +81,9 @@ cdef class Conductor:
     cdef readonly object name, idx
     cdef readonly Category category
     
-    def __cinit__(self, object name, Category category, diameter=0.0, area=0.0, weight=0.0,
-                 strength=0.0, r25=0.0, hcap=0.0, idx=None):
+    def __cinit__(self, object name, Category category, double diameter=0.0, double area=0.0, 
+                  double weight=0.0, double strength=0.0, double r25=0.0, double hcap=0.0, 
+                  object idx=None):
         self.name = name
         self.category = category
         self.diameter = diameter
@@ -102,8 +103,9 @@ cdef class ConductorMaker:
     cdef public object name, idx
     cdef public Category category
     
-    def __cinit__(self, object name, Category category, diameter=0.0, area=0.0, weight=0.0,
-                 strength=0.0, r25=0.0, hcap=0.0, idx=None):
+    def __cinit__(self, object name, Category category, double diameter=0.0, double area=0.0,
+                  double weight=0.0, double strength=0.0, double r25=0.0, double hcap=0.0, 
+                  object idx=None):
         self.name = name
         self.category = category
         self.diameter = diameter
@@ -146,7 +148,7 @@ cdef class CurrentCalc:
         self._airVelocity = 2.0
         self._sunEffect = 1.0
         self._emissivity = 0.5
-        self._formula = 0
+        self._formula = _CF_IEEE
         self._deltaTemp = 0.01
     
     #-------------------------------------------------------------------------------------
@@ -336,7 +338,7 @@ cdef class OperatingItem:
     cdef readonly double tempMaxOp
     cdef readonly int nsc
 
-    def __cinit__(self, CurrentCalc currentcalc, tempMaxOp=50.0, nsc=1):
+    def __cinit__(self, CurrentCalc currentcalc, double tempMaxOp=50.0, int nsc=1):
         if tempMaxOp < _TC_MIN: raise ValueError("tempMaxOp < TC_MIN")
         if tempMaxOp > _TC_MAX: raise ValueError("tempMaxOp > TC_MAX")
         if nsc < 1: raise ValueError("nsc < 1")
@@ -365,7 +367,7 @@ cdef class OperatingTable:
     cdef readonly list items
     cdef readonly object idx
 
-    def __cinit__(self, idx=None):
+    def __cinit__(self, object idx=None):
         self.items = []
         self.idx = idx
     
