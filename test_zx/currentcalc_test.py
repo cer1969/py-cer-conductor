@@ -81,9 +81,12 @@ class TCProperties(unittest.TestCase):
         setattr(self.cc, prop, value)
         return True
     
-    def test_conductor(self):
+    def test_read_only(self):
         self.assertEqual(self.cc.conductor, self.cond)
         self.assertRaises(AttributeError, self.SetValue, "conductor", 1)
+        self.assertRaises(AttributeError, self.SetValue, "diameter", 1)
+        self.assertRaises(AttributeError, self.SetValue, "r25", 1)
+        self.assertRaises(AttributeError, self.SetValue, "alpha", 1)
     
     def test_altitude(self):
         self.cc.altitude = 150.0

@@ -13,6 +13,9 @@ class CurrentCalc(object):
     
     Read-only properties
     conductor  : Conductor instance
+    diameter   : Diameter [mm] from conductor
+    r25        : Resistance at 25°C [Ohm/km] from conductor
+    alpha      : Temperature coefficient of resistance [1/°C] from conductor
     
     Read-write properties
     altitude    : Altitude [m] = 300.0
@@ -24,8 +27,8 @@ class CurrentCalc(object):
     
     """
 
-    __slots__ = ('_conductor', '_altitude', '_airVelocity', '_sunEffect', '_emissivity',
-                 '_formula', '_deltaTemp')
+    __slots__ = ('_conductor', '_diameter', '_r25', '_alpha', '_altitude', '_airVelocity', 
+                 '_sunEffect', '_emissivity', '_formula', '_deltaTemp')
     
     def __init__(self, conductor):
         """
@@ -38,6 +41,9 @@ class CurrentCalc(object):
         if conductor._category._alpha >= 1: raise ValueError("category.alpha >= 1")
         
         self._conductor = conductor
+        self._diameter = conductor._diameter
+        self._r25 = conductor._r25
+        self._alpha = conductor._category._alpha
         
         self._altitude = 300.0
         self._airVelocity = 2.0
@@ -55,7 +61,7 @@ class CurrentCalc(object):
         """
         if tc < TC_MIN: raise ValueError("tc < TC_MIN")
         if tc > TC_MAX: raise ValueError("tc > TC_MAX")
-        return self._conductor._r25*(1 + self._conductor._category._alpha*(tc - 25))
+        return self._r25*(1 + self._alpha*(tc - 25))
 
     def getCurrent(self, ta, tc):
         """Returns current [ampere]
@@ -70,7 +76,7 @@ class CurrentCalc(object):
         if ta >= tc:
             return 0.0
 
-        D = self._conductor._diameter/25.4             # Diámetro en pulgadas
+        D = self._diameter/25.4                        # Diámetro en pulgadas
         Pb = 10**(1.880813592 - self._altitude/18336)  # Presión barométrica en cmHg
         V = self._airVelocity*3600                     # Vel. viento en pies/hora
         Rc = self.getResistance(tc)*0.0003048          # Resistencia en ohm/pies
@@ -158,12 +164,27 @@ class CurrentCalc(object):
         return Tmed
     
     #-------------------------------------------------------------------------------------
-    # Properties
+    # Read-only properties
     
     @property
     def conductor(self):
         return self._conductor
+
+    @property
+    def diameter(self):
+        return self._diameter
     
+    @property
+    def r25(self):
+        return self._r25
+    
+    @property
+    def alpha(self):
+        return self._alpha
+
+    #-------------------------------------------------------------------------------------
+    # Read-write properties
+
     @property
     def altitude(self):
         return self._altitude
