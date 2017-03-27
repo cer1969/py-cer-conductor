@@ -60,7 +60,7 @@ class OperatingItem(object):
 
 #-----------------------------------------------------------------------------------------
 
-class OperatingTable(list):
+class OperatingTable(object):
     """Object to store OperatingItem instances and calculates current.
     
     Read-only properties
