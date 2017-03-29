@@ -6,15 +6,15 @@ __all__ = ['Conductor', 'ConductorMaker']
 
 class ConductorMaker(object):
     """Mutable object to create inmutable Conductor objects
-       Same arguments that Conductor
+       Same arguments that Conductor except category is replaced for catmk
+       catmk : CategoryMaker object
     """
-    __slots__ = ('name', 'category', 'diameter', 'area', 'weight', 'strength', 'r25',
-                 'hcap', 'idx')
+    __slots__ = ('name', 'catmk', 'diameter', 'area', 'weight', 'strength', 'r25', 'hcap', 'idx')
     
-    def __init__(self, name, category, diameter=0.0, area=0.0, weight=0.0, strength=0.0, r25=0.0,
+    def __init__(self, name, catmk, diameter=0.0, area=0.0, weight=0.0, strength=0.0, r25=0.0,
                  hcap=0.0, idx=None):
         self.name = name
-        self.category = category
+        self.catmk = catmk
         self.diameter = diameter
         self.area = area
         self.weight = weight
@@ -24,7 +24,7 @@ class ConductorMaker(object):
         self.idx = idx
 
     def get(self):
-        return Conductor(self.name, self.category, self.diameter, self.area, self.weight, 
+        return Conductor(self.name, self.catmk.get(), self.diameter, self.area, self.weight, 
                          self.strength, self.r25, self.hcap, self.idx)
 
     def __str__(self):

@@ -8,17 +8,18 @@ import unittest
 class TCConstructor(unittest.TestCase):
 
     def setUp(self):
-        self.condmk = cx.ConductorMaker("AAAC 740,8 MCM FLINT", cx.CC_AAAC, diameter=25.17, r25=0.089360, hcap=0.052744)
-        self.cond = cx.Conductor("AAAC 740,8 MCM FLINT", cx.CC_AAAC, diameter=25.17, r25=0.089360, hcap=0.052744)
+        catmk = cx.CategoryMaker.fromCategory(cx.CC_AAAC)
+        self.condmk = cx.ConductorMaker("AAAC 740,8 MCM FLINT", catmk, diameter=25.17, r25=0.089360, hcap=0.052744)
     
     def test_defaultValues(self):
         # Verifica que se asignen valores por defecto
-        cc = cx.CurrentCalc(self.cond)
+        cond = self.condmk.get()
+        cc = cx.CurrentCalc(cond)
         Imax = cc.getCurrent(25.0, cx.TC_MAX)
         scc = cx.TcTimeCalc(cc, 25.0)
         
         self.assertEqual(scc.currentcalc, cc)
-        self.assertEqual(scc.currentcalc.conductor, self.cond)
+        self.assertEqual(scc.currentcalc.conductor, cond)
         self.assertEqual(scc.ta, 25.0)
         self.assertEqual(scc.timeStep, 1.0)
         self.assertEqual(scc.deltaIc, 0.01)
@@ -30,9 +31,11 @@ class TCConstructor(unittest.TestCase):
     def test_errorParameters(self):
         cc = cx.CurrentCalc(self.condmk.get())
         
+        # Verifica ta fuera de rango
         self.assertRaises(ValueError, cx.TcTimeCalc, cc, cx.TA_MIN - 1)
         self.assertRaises(ValueError, cx.TcTimeCalc, cc, cx.TA_MAX + 1)
         
+        # Verifica hcap fuera de rango
         self.condmk.hcap = 0.0
         cc = cx.CurrentCalc(self.condmk.get())
         self.assertRaises(ValueError, cx.TcTimeCalc, cc, 25.0)
