@@ -66,9 +66,17 @@ cdef class CategoryMaker:
         self.alpha = alpha
         self.idx = idx
     
+    @staticmethod
+    cdef CategoryMaker _fromCategory(Category cat):
+        return CategoryMaker(cat.name, cat.modelas, cat.coefexp, cat.creep, cat.alpha, cat.idx)
+
     cdef Category _get(self):
         return Category(self.name, self.modelas, self.coefexp, self.creep, self.alpha, self.idx)
     
+    @staticmethod
+    def fromCategory(cat):
+        return CategoryMaker._fromCategory(cat)
+
     def get(self):
         return self._get()
 
@@ -101,13 +109,13 @@ cdef class ConductorMaker:
     
     cdef public double diameter, area, weight, strength, r25, hcap
     cdef public object name, idx
-    cdef public Category category
+    cdef public CategoryMaker catmk
     
-    def __cinit__(self, object name, Category category, double diameter=0.0, double area=0.0,
+    def __cinit__(self, object name, CategoryMaker catmk, double diameter=0.0, double area=0.0,
                   double weight=0.0, double strength=0.0, double r25=0.0, double hcap=0.0, 
                   object idx=None):
         self.name = name
-        self.category = category
+        self.catmk = catmk
         self.diameter = diameter
         self.area = area
         self.weight = weight
@@ -117,7 +125,7 @@ cdef class ConductorMaker:
         self.idx = idx
     
     cdef Conductor _get(self):
-        return Conductor(self.name, self.category, self.diameter, self.area, self.weight, 
+        return Conductor(self.name, self.catmk._get(), self.diameter, self.area, self.weight, 
                          self.strength, self.r25, self.hcap, self.idx)
     
     def get(self):
