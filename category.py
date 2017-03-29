@@ -19,6 +19,13 @@ class CategoryMaker(object):
         self.alpha = alpha
         self.idx = idx
     
+    @staticmethod
+    def fromCategory(cat):
+        """staticmethod: Returns CategoryMaker object from Category object
+        cat : Category object
+        """
+        return CategoryMaker(cat.name, cat.modelas, cat.coefexp, cat.creep, cat.alpha, cat.idx)
+
     def get(self):
         return Category(self.name, self.modelas, self.coefexp, self.creep, self.alpha, self.idx)
     
