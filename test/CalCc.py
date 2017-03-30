@@ -4,21 +4,23 @@
 #------------------------------------------------------------------------------
 # CONSTANTES
 
-JOULE_A_KCAL = 0.00023889   # kCal/Joule
-METRO_A_PIE = 3.2808        # pies/metro
+KCAL_A_JOULE = 4186.8           # joule/kcal
+METRO_A_PIE = 3.28084           # pies/metro
 
 # VALORES CONOCIDOS DE CALOR ESPECÍFICO PARA DISTINTOS MATERIALES
-# Calor específico Joule/(Kg*°K)
+# Calor específico joule/(kg*°K)
 # Capacidad calórica (kcal/°K)
+# Calor específico [joule/(kg*°K)] = Capacidad calórica [kcal/°K] * KCAL_A_JOULE [joule/kcal] / 1 [kg]
 
-CALOR_ESPECIFICO = {"al"    :   910,    # Aluminio --> Otro dato 900
-                    "aal"   :   700,    # Aleación de aluminio
-                    "ac"    :   460,    # Acero --> Otro dato 449
-                    "cu"    :   386}    # Cobre --> Otro dato 385
+CALOR_ESPECIFICO = {"al"    :   908.536,    # Aluminio --> Otro dato 897
+                    "aal"   :   700,        # Aleación de aluminio (CARRIL)
+                                            # El aaac contiene al menos 97% aluminio lo que daría un valor cercano a 893
+                    "ac"    :   460.548,    # Acero --> Otro dato 449
+                    "cu"    :   389.372}    # Cobre --> Otro dato 385
 
-CAPACIDAD_CALORICA = {"al"    :  0.214,    # Aluminio
-                      "ac"    :  0.115,    # Acero
-                      "cu"    :  0.0928}   # Cobre
+CAPACIDAD_CALORICA = {"al"    :  0.217,    # Aluminio
+                      "ac"    :  0.110,    # Acero
+                      "cu"    :  0.093}   # Cobre
 
 #------------------------------------------------------------------------------
 # CÁLCULO DE CAPACIDAD CALÓRICA por unidad de longitud kcal/(pie*°K)
@@ -30,7 +32,7 @@ def CapacidadCalorica(data):
         cesp = CALOR_ESPECIFICO[tipo]
         j_metro_k = cesp * peso
         j_metro_k_total = j_metro_k_total + j_metro_k
-    kcal_metro_k = j_metro_k_total * JOULE_A_KCAL
+    kcal_metro_k = j_metro_k_total / KCAL_A_JOULE
     return kcal_metro_k / METRO_A_PIE
 
 def CapacidadCalorica2(data):
