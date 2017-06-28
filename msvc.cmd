@@ -2,7 +2,7 @@
 @echo off
 setlocal
 
-if not defined PYTHON_ROOT goto :err_python_root
+if not defined PYTRT goto :err_python_root
 
 set module=_zx
 
@@ -10,7 +10,7 @@ if not "%~1"=="" goto :%~1
 goto :build
 
 :err_python_root
-set err=ERROR: PYTHON_ROOT NO DEFINIDA
+set err=ERROR: PYTRT NO DEFINIDA
 goto :end
 
 :build

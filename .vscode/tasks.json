@@ -1,6 +1,6 @@
 {
     "version": "0.1.0",
-    "command": "C:/Users/crecheverria/Apps/WinPython/3.5.3.0Zero/python-3.5.3.amd64/python.exe",
+    "command": "%USERPROFILE%/Apps/WinPython/3.6.1.0Qt5/python-3.6.1.amd64/python.exe",
     "isShellCommand": true,
     "args": ["-u", "${file}"],
     "showOutput": "always",
