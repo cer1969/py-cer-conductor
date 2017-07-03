@@ -13,9 +13,6 @@ class CurrentCalc(object):
     
     Read-only properties
     conductor  : Conductor instance
-    diameter   : Diameter [mm] from conductor
-    r25        : Resistance at 25°C [Ohm/km] from conductor
-    alpha      : Temperature coefficient of resistance [1/°C] from conductor
     
     Read-write properties
     altitude    : Altitude [m] = 300.0
@@ -41,6 +38,8 @@ class CurrentCalc(object):
         if conductor._category._alpha >= 1: raise ValueError("category.alpha >= 1")
         
         self._conductor = conductor
+
+        # Para acelerar cálculos
         self._diameter = conductor._diameter
         self._r25 = conductor._r25
         self._alpha = conductor._category._alpha
@@ -169,18 +168,6 @@ class CurrentCalc(object):
     @property
     def conductor(self):
         return self._conductor
-
-    @property
-    def diameter(self):
-        return self._diameter
-    
-    @property
-    def r25(self):
-        return self._r25
-    
-    @property
-    def alpha(self):
-        return self._alpha
 
     #-------------------------------------------------------------------------------------
     # Read-write properties
