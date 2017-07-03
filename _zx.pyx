@@ -137,7 +137,7 @@ cdef class ConductorMaker:
 cdef class CurrentCalc:
 
     cdef readonly Conductor conductor
-    cdef readonly double r25, diameter, alpha
+    cdef double _r25, _diameter, _alpha
     cdef double _altitude, _airVelocity, _sunEffect, _emissivity, _deltaTemp
     cdef int _formula
 
@@ -148,9 +148,11 @@ cdef class CurrentCalc:
         if conductor.category.alpha >= 1: raise ValueError("category.alpha >= 1")
 
         self.conductor = conductor
-        self.diameter = conductor.diameter
-        self.r25 = conductor.r25
-        self.alpha = conductor.category.alpha
+
+        # Para acelerar cálculos
+        self._diameter = conductor.diameter
+        self._r25 = conductor.r25
+        self._alpha = conductor.category.alpha
 
         self._altitude = 300.0
         self._airVelocity = 2.0
@@ -180,7 +182,7 @@ cdef class CurrentCalc:
     cdef double _getResistance(self, double tc) except -1000:
         if tc < _TC_MIN: raise ValueError("tc < TC_MIN")
         if tc > _TC_MAX: raise ValueError("tc > TC_MAX")
-        return self.r25*(1 + self.alpha*(tc - 25))
+        return self._r25*(1 + self._alpha*(tc - 25))
     
     cdef double _getCurrent(self, double ta, double tc) except -1000:
         if ta < _TA_MIN: raise ValueError("ta < TA_MIN")
@@ -193,7 +195,7 @@ cdef class CurrentCalc:
         if ta >= tc:
             return 0.0
         
-        D = self.diameter/25.4                                              # Diámetro en pulgadas
+        D = self._diameter/25.4                                              # Diámetro en pulgadas
         Pb = pow(10, 1.880813592 - self._altitude/18336)                    # Presión barométrica en cmHg
         V = self._airVelocity*3600                                          # Vel. viento en pies/hora
         Rc = self._getResistance(tc)*0.0003048                              # Resistencia en ohm/pies
