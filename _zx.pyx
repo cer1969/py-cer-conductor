@@ -67,18 +67,18 @@ cdef class CategoryMaker:
         self.idx = idx
     
     @staticmethod
+    def fromCategory(cat):
+        return CategoryMaker._fromCategory(cat)
+    
+    @staticmethod
     cdef CategoryMaker _fromCategory(Category cat):
         return CategoryMaker(cat.name, cat.modelas, cat.coefexp, cat.creep, cat.alpha, cat.idx)
 
-    cdef Category _get(self):
-        return Category(self.name, self.modelas, self.coefexp, self.creep, self.alpha, self.idx)
-    
-    @staticmethod
-    def fromCategory(cat):
-        return CategoryMaker._fromCategory(cat)
-
     def get(self):
         return self._get()
+    
+    cdef Category _get(self):
+        return Category(self.name, self.modelas, self.coefexp, self.creep, self.alpha, self.idx)
 
 #-----------------------------------------------------------------------------------------
 # Conductor
@@ -124,12 +124,12 @@ cdef class ConductorMaker:
         self.hcap = hcap
         self.idx = idx
     
+    def get(self):
+        return self._get()
+    
     cdef Conductor _get(self):
         return Conductor(self.name, self.catmk._get(), self.diameter, self.area, self.weight, 
                          self.strength, self.r25, self.hcap, self.idx)
-    
-    def get(self):
-        return self._get()
 
 #-----------------------------------------------------------------------------------------
 # CurrentCalc
@@ -160,29 +160,17 @@ cdef class CurrentCalc:
         self._emissivity = 0.5
         self._formula = _CF_IEEE
         self._deltaTemp = 0.01
-    
-    #-------------------------------------------------------------------------------------
-    # Public methods
 
     def getResistance(self, double tc):
         return self._getResistance(tc)
     
-    def getCurrent(self, double ta, double tc):
-        return self._getCurrent(ta, tc)
-    
-    def getTc(self, double ta, double ic):
-        return self._getTc(ta, ic)
-    
-    def getTa(self, double tc, double ic):
-        return self._getTa(tc, ic)
-    
-    #-------------------------------------------------------------------------------------
-    # Private methods
-
     cdef double _getResistance(self, double tc) except -1000:
         if tc < _TC_MIN: raise ValueError("tc < TC_MIN")
         if tc > _TC_MAX: raise ValueError("tc > TC_MAX")
         return self._r25*(1 + self._alpha*(tc - 25))
+    
+    def getCurrent(self, double ta, double tc):
+        return self._getCurrent(ta, tc)
     
     cdef double _getCurrent(self, double ta, double tc) except -1000:
         if ta < _TA_MIN: raise ValueError("ta < TA_MIN")
@@ -227,6 +215,9 @@ cdef class CurrentCalc:
         else: 
             return sqrt((Qc + Qr - Qs)/Rc)
     
+    def getTc(self, double ta, double ic):
+        return self._getTc(ta, ic)
+    
     cdef double _getTc(self, double ta, double ic) except -1000:
         if ta < _TA_MIN: raise ValueError("ta < TA_MIN")
         if ta > _TA_MAX: raise ValueError("ta > TA_MAX")
@@ -251,6 +242,9 @@ cdef class CurrentCalc:
             #    err_msg = "getTc(): N° iterations > %d" % ITER_MAX
             #    raise RuntimeError(err_msg)
         return Tmed
+    
+    def getTa(self, double tc, double ic):
+        return self._getTa(tc, ic)
     
     cdef double _getTa(self, double tc, double ic) except -1000:
         if tc < _TC_MIN: raise ValueError("tc < TC_MIN")
@@ -279,9 +273,6 @@ cdef class CurrentCalc:
             #    err_msg = "getTa(): N° iterations > %d" % ITER_MAX
             #    raise RuntimeError(err_msg)
         return Tmed
-    
-    #-------------------------------------------------------------------------------------
-    # Read-write properties
 
     @property
     def altitude(self):
@@ -356,15 +347,9 @@ cdef class OperatingItem:
         self.currentcalc = currentcalc
         self.tempMaxOp = tempMaxOp
         self.nsc = nsc
-    
-    #-------------------------------------------------------------------------------------
-    # Public methods
 
     def getCurrent(self, double ta):
         return self._getCurrent(ta)
-
-    #-------------------------------------------------------------------------------------
-    # Private methods
 
     cdef double _getCurrent(self, double ta) except -1000:
         return self.currentcalc._getCurrent(ta, self.tempMaxOp) * self.nsc
@@ -380,16 +365,10 @@ cdef class OperatingTable:
     def __cinit__(self, object idx=None):
         self.items = []
         self.idx = idx
-    
-    #-------------------------------------------------------------------------------------
-    # Public methods
 
     def getCurrent(self, double ta):
         return self._getCurrent(ta)
     
-    #-------------------------------------------------------------------------------------
-    # Private methods
-
     cdef double _getCurrent(self, double ta) except -1000:
         cdef double minimo, amp
         cdef OperatingItem item
@@ -399,3 +378,72 @@ cdef class OperatingTable:
             amp = item._getCurrent(ta)
             if amp < minimo: minimo = amp
         return minimo
+
+#-----------------------------------------------------------------------------------------
+# TcTimeData
+
+cdef class TcTimeData:
+
+    cdef readonly tuple data, temps, times
+    cdef readonly double growing, tempMin, tempMax, timeMin, timeMax
+    
+    def __cinit__(self, object data):
+        if len(data) <= 1: raise ValueError("len(data) <= 1")
+        
+        self.data = tuple(data)
+        self.growing = self.data[-1][1] > self.data[0][1]
+        self.times = tuple([x[0] for x in self.data])
+        self.temps = tuple([x[1] for x in self.data])
+        self.tempMin = min(self.temps)
+        self.tempMax = max(self.temps)
+        self.timeMin = self.times[0]
+        self.timeMax = self.times[-1]
+    
+    def getTime(self, double tc):
+        return self._getTime(tc)
+
+    cdef double _getTime(self, double tc) except -1000:        
+        cdef double t0, t1, v0, v1, tx
+        cdef int ilo, ihi, mid
+
+        ilo = 0
+        ihi = len(self.temps) - 1
+        
+        while ihi - ilo > 1:
+            mid = int((ilo + ihi) // 2)
+            if tc > self.temps[mid]:
+                ilo = mid if self.growing else ilo
+                ihi = ihi if self.growing else mid
+            else:
+                ihi = mid if self.growing else ihi
+                ilo = ilo if self.growing else mid
+        
+        t0, v0 = self.data[ilo]
+        t1, v1 = self.data[ihi]
+        
+        tx = (tc - v0)*(t1 - t0)/(v1 - v0) + t0
+        if tx < 0:
+            tx = 0
+        return tx
+    
+    def getTc(self, double t):
+        return self._getTc(t)
+    
+    cdef double _getTc(self, double t) except -1000:
+        cdef double t0, t1, v0, v1
+        cdef int ilo, ihi, mid
+        
+        ilo = 0
+        ihi = len(self.times) - 1
+        
+        while ihi - ilo > 1:
+            mid = int((ilo + ihi) // 2)
+            if t > self.times[mid]:
+                ilo = mid
+            else:
+                ihi = mid
+        
+        t0, v0 = self.data[ilo]
+        t1, v1 = self.data[ihi]
+
+        return (t - t0)*(v1 - v0)/(t1 - t0) + v0
