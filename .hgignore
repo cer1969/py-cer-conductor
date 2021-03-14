@@ -1,9 +1,0 @@
-
-syntax: glob
-*.pyc
-*.pyd
-*.so
-*.tmp_*
-*.tpl.py
-ztmp/
-Thumbs.db

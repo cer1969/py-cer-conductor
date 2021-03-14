@@ -1,10 +1,14 @@
-# Svelte
+# Directorios
 .vscode
+ztmp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+*.tmp_*
+*.tpl.py
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
