@@ -5,7 +5,7 @@ import time
 
 #-----------------------------------------------------------------------------------------
 
-t0 = time.clock()
+t0 = time.perf_counter()
 
 cab = zx.Conductor(category=zx.CC_AAAC, name="AAAC 740,8 MCM FLINT", diameter=25.17,
                    r25=0.089360, hcap=0.052744)
@@ -85,4 +85,4 @@ print(scc.getIcfin(tcx=48, icini=Icnom, lapse=curva3.getTime(48), tcxini=None))
 lap = curva3.getTime(43) - curva3.getTime(48)
 print(scc.getIcfin(tcx=43, icini=Icnom, lapse=lap, tcxini=48))
 
-print(time.clock() - t0)
+print(time.perf_counter() - t0)

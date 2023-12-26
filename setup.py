@@ -1,6 +1,8 @@
-from distutils.core import setup
+
+from setuptools import setup
 from Cython.Build import cythonize
 
 setup(
-    ext_modules = cythonize("_zx.pyx")
+    name = "zxlib",
+    ext_modules = cythonize("zxlib.pyx", annotate=True)
 )

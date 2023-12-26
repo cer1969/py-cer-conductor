@@ -1,6 +1,10 @@
 # Directorios
 .vscode
 ztmp
+build
+zxlib.c
+zxlib.html
+zxsrc/*.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

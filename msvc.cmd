@@ -2,7 +2,7 @@
 @echo off
 setlocal
 
-if not defined PYTRT goto :err_python_root
+:: if not defined PYTRT goto :err_python_root
 
 set module=_zx
 
