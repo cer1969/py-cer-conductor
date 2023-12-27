@@ -1,6 +1,17 @@
 #-----------------------------------------------------------------------------------------
 # Constants
 
+# cdef extern from "constants.h":
+#     cdef int _CF_IEEE
+#     cdef int _CF_CLASSIC
+#     cdef double _TA_MIN
+#     cdef double _TA_MAX
+#     cdef double _TC_MIN
+#     cdef double _TC_MAX
+#     cdef double _TENSION_MAX
+#     #cdef double _ITER_MAX
+
+
 cdef int _CF_IEEE   = 0
 cdef int _CF_CLASSIC = 1
 cdef double _TA_MIN = -90.0
