@@ -2,9 +2,8 @@
 .vscode
 ztmp
 build
-zxlib.c
-zxlib.html
-zxsrc/*.html
+zx.c
+zx.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
