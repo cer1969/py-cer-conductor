@@ -14,6 +14,7 @@ cdef double _TC_MAX = 2000.0
 cdef double _TENSION_MAX = 50000
 #cdef double _ITER_MAX = 20000
 
+
 CF_IEEE = _CF_IEEE
 CF_CLASSIC = _CF_CLASSIC
 TA_MIN = _TA_MIN
@@ -29,56 +30,13 @@ TENSION_MAX = _TENSION_MAX
 cdef class Category:
     
     cdef readonly double modelas, coefexp, creep, alpha
-    cdef readonly object name, idx
     
-    def __cinit__(self, object name, double modelas=0.0, double coefexp=0.0, double creep=0.0,
-                 double alpha=0.0, object idx=None):
-        self.name = name
+    def __cinit__(self, double modelas=0.0, double coefexp=0.0, double creep=0.0, 
+                  double alpha=0.0):
         self.modelas = modelas
         self.coefexp = coefexp
         self.creep = creep
         self.alpha = alpha
-        self.idx = idx
-
-CC_CU     = Category('COPPER',      12000.0, 0.0000169,  0.0, 0.00374, 'CU')
-CC_AAAC   = Category('AAAC (AASC)',  6450.0, 0.0000230, 20.0, 0.00340, 'AAAC')
-CC_ACAR   = Category('ACAR',         6450.0, 0.0000250, 20.0, 0.00385, 'ACAR')
-CC_ACSR   = Category('ACSR',         8000.0, 0.0000191, 20.0, 0.00395, 'ACSR')
-CC_AAC    = Category('ALUMINUM',     5600.0, 0.0000230, 20.0, 0.00395, 'AAC')
-CC_CUWELD = Category('COPPERWELD',  16200.0, 0.0000130,  0.0, 0.00380, 'CUWELD')
-CC_AASC   = CC_AAAC
-CC_ALL    = CC_AAC
-
-#-----------------------------------------------------------------------------------------
-# CategoryMaker
-
-cdef class CategoryMaker:
-    
-    cdef public double modelas, coefexp, creep, alpha
-    cdef public object name, idx
-    
-    def __cinit__(self, object name, double modelas=0.0, double coefexp=0.0, double creep=0.0,
-                 double alpha=0.0, object idx=None):
-        self.name = name
-        self.modelas = modelas
-        self.coefexp = coefexp
-        self.creep = creep
-        self.alpha = alpha
-        self.idx = idx
-    
-    @staticmethod
-    def fromCategory(cat):
-        return CategoryMaker._fromCategory(cat)
-    
-    @staticmethod
-    cdef CategoryMaker _fromCategory(Category cat):
-        return CategoryMaker(cat.name, cat.modelas, cat.coefexp, cat.creep, cat.alpha, cat.idx)
-
-    def get(self):
-        return self._get()
-    
-    cdef Category _get(self):
-        return Category(self.name, self.modelas, self.coefexp, self.creep, self.alpha, self.idx)
 
 #-----------------------------------------------------------------------------------------
 # Conductor
@@ -86,13 +44,10 @@ cdef class CategoryMaker:
 cdef class Conductor:
     
     cdef readonly double diameter, area, weight, strength, r25, hcap
-    cdef readonly object name, idx
     cdef readonly Category category
     
-    def __cinit__(self, object name, Category category, double diameter=0.0, double area=0.0, 
-                  double weight=0.0, double strength=0.0, double r25=0.0, double hcap=0.0, 
-                  object idx=None):
-        self.name = name
+    def __cinit__(self, Category category, double diameter=0.0, double area=0.0, double weight=0.0, 
+                  double strength=0.0, double r25=0.0, double hcap=0.0):
         self.category = category
         self.diameter = diameter
         self.area = area
@@ -100,36 +55,6 @@ cdef class Conductor:
         self.strength = strength
         self.r25 = r25
         self.hcap = hcap
-        self.idx = idx
-
-#-----------------------------------------------------------------------------------------
-# ConductorMaker
-
-cdef class ConductorMaker:
-    
-    cdef public double diameter, area, weight, strength, r25, hcap
-    cdef public object name, idx
-    cdef public CategoryMaker catmk
-    
-    def __cinit__(self, object name, CategoryMaker catmk, double diameter=0.0, double area=0.0,
-                  double weight=0.0, double strength=0.0, double r25=0.0, double hcap=0.0, 
-                  object idx=None):
-        self.name = name
-        self.catmk = catmk
-        self.diameter = diameter
-        self.area = area
-        self.weight = weight
-        self.strength = strength
-        self.r25 = r25
-        self.hcap = hcap
-        self.idx = idx
-    
-    def get(self):
-        return self._get()
-    
-    cdef Conductor _get(self):
-        return Conductor(self.name, self.catmk._get(), self.diameter, self.area, self.weight, 
-                         self.strength, self.r25, self.hcap, self.idx)
 
 #-----------------------------------------------------------------------------------------
 # CurrentCalc
@@ -183,7 +108,7 @@ cdef class CurrentCalc:
         if ta >= tc:
             return 0.0
         
-        D = self._diameter/25.4                                              # Diámetro en pulgadas
+        D = self._diameter/25.4                                             # Diámetro en pulgadas
         Pb = pow(10, 1.880813592 - self._altitude/18336)                    # Presión barométrica en cmHg
         V = self._airVelocity*3600                                          # Vel. viento en pies/hora
         Rc = self._getResistance(tc)*0.0003048                              # Resistencia en ohm/pies

@@ -16,7 +16,7 @@ c1 = cx.Conductor(name = 'AAAC 740,8 MCM FLINT',
                   hcap = 0.05274,           # capacidad calórica
                   )
 
-c2 = zx.Conductor(name = 'AAAC 740,8 MCM FLINT',
+c2 = zx.Conductor(#name = 'AAAC 740,8 MCM FLINT',
                   category = zx.CC_AAAC,
                   diameter = 25.17,         # en mm
                   area = 375.4,             # en mm2
@@ -38,6 +38,7 @@ c2 = zx.Conductor(name = 'AAAC 740,8 MCM FLINT',
 
 ac1 = cx.CurrentCalc(c1)
 ac2 = zx.CurrentCalc(c2)
+#print(ac2.conductor.category)
 
 bench("getTc(50, 1000)", ac1.getTc, ac2.getTc, (50, 100))
 print(" ")

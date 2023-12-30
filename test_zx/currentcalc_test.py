@@ -8,8 +8,8 @@ import unittest
 class TCConstructor(unittest.TestCase):
 
     def setUp(self):
-        catmk = zx.CategoryMaker('AAAC (AASC)', alpha=0.003400)
-        self.condmk = zx.ConductorMaker("AAAC 740,8 MCM FLINT", catmk, diameter=25.17, r25=0.089360)
+        catmk = zx.CategoryMaker(alpha=0.003400)
+        self.condmk = zx.ConductorMaker(catmk, diameter=25.17, r25=0.089360)    # AAAC 740,8 MCM FLINT
     
     def test_defaults(self):
         # Verifica que se asignen valores por defecto al crear CurrentCalc
@@ -67,7 +67,7 @@ class TCConstructor(unittest.TestCase):
 class TCProperties(unittest.TestCase):
     
     def setUp(self):
-        self.cond = zx.Conductor("AAAC 740,8 MCM FLINT", zx.CC_AAAC, diameter=25.17, r25=0.089360)
+        self.cond = zx.Conductor(zx.CC_AAAC, diameter=25.17, r25=0.089360)  # AAAC 740,8 MCM FLINT
         self.cc = zx.CurrentCalc(self.cond)
     
     def SetValue(self, prop, value):
@@ -126,7 +126,7 @@ class TCProperties(unittest.TestCase):
 class TCMethods(unittest.TestCase):
     
     def setUp(self):
-        cond = zx.Conductor("AAAC 740,8 MCM FLINT", zx.CC_AAAC, diameter=25.17, r25=0.089360)
+        cond = zx.Conductor(zx.CC_AAAC, diameter=25.17, r25=0.089360)   # AAAC 740,8 MCM FLINT
         self.cc = zx.CurrentCalc(cond)
 
     def test_getResistance(self):
